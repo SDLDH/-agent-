@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>第5章 · 工程化开发规范</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body>
+<div class="page-header ch5">
+  <a href="index.html" class="back-btn">← 返回目录</a>
+  <div class="ch-num">第 5 章</div>
+  <h1>工程化开发规范</h1>
+  <p>Git版本控制 · 日志系统 · 定时任务 · 告警通知 · 代码规范</p>
+</div>
+<div class="content">
+
+<div class="section">
+  <h2 class="sec-title">🌿 5.1 Git 版本控制完整教程</h2>
+
+  <div class="concept-box">
+    <div class="concept-icon">⏮️</div>
+    <div class="concept-body">
+      <h4>为什么要用Git？</h4>
+      <p>想象你改了一个脚本，发现新版本有bug，但老版本可以用，你怎么回到老版本？<br>
+      如果没有Git：翻历史备份，也许找不到了。<br>
+      有了Git：<code>git checkout</code> 秒回任意历史版本，还能看到每次改了什么、谁改的。</p>
+    </div>
+  </div>
+
+  <h3>📦 Git 核心概念图解</h3>
+  <div class="flow-row">
+    <div class="flow-node">📝 工作区<br><small>你改的文件</small></div>
+    <div class="flow-arrow">git add →</div>
+    <div class="flow-node active">📋 暂存区<br><small>准备提交的变更</small></div>
+    <div class="flow-arrow">git commit →</div>
+    <div class="flow-node">🗄️ 本地仓库<br><small>已提交的历史</small></div>
+    <div class="flow-arrow">git push →</div>
+    <div class="flow-node active">☁️ 远程仓库<br><small>GitHub/GitLab</small></div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">1</div><h4>Git基础命令（每天都用）</h4></div>
+    <div class="kp-body">
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">bash</div></div>
+        <div class="code-body"><span class="c"># ===== 初始化与配置 =====</span>
+git config --global user.name "党光会"
+git config --global user.email "your@email.com"
+git init                          <span class="c"># 在当前目录初始化Git仓库</span>
+git clone URL                     <span class="c"># 克隆远程仓库到本地</span>
+
+<span class="c"># ===== 查看状态 =====</span>
+git status                        <span class="c"># 查看哪些文件被修改了</span>
+git log --oneline --graph         <span class="c"># 查看提交历史（图形化）</span>
+git diff                          <span class="c"># 查看工作区的具体改动</span>
+git diff --staged                 <span class="c"># 查看暂存区的改动</span>
+
+<span class="c"># ===== 日常提交流程 =====</span>
+git add .                         <span class="c"># 暂存所有变更（常用）</span>
+git add src/main.py               <span class="c"># 只暂存指定文件</span>
+git add -p                        <span class="c"># 交互式选择要暂存的内容</span>
+
+git commit -m "fix: 修复订单金额计算错误"  <span class="c"># 提交并写描述</span>
+
+<span class="c"># ===== 分支操作 =====</span>
+git branch                        <span class="c"># 查看所有本地分支</span>
+git branch -a                     <span class="c"># 查看所有分支（含远程）</span>
+git checkout -b feature/add-login <span class="c"># 创建并切换到新分支</span>
+git checkout main                 <span class="c"># 切换到main分支</span>
+git merge feature/add-login       <span class="c"># 把feature分支合并到当前分支</span>
+git branch -d feature/add-login   <span class="c"># 删除已合并的分支</span>
+
+<span class="c"># ===== 远程同步 =====</span>
+git push origin main              <span class="c"># 推送到远程main分支</span>
+git push -u origin feature/new    <span class="c"># 推送新分支并设置追踪</span>
+git pull                          <span class="c"># 拉取并合并远程最新代码</span>
+git fetch                         <span class="c"># 只拉取不合并</span>
+
+<span class="c"># ===== 撤销操作 =====</span>
+git checkout -- file.py           <span class="c"># 撤销工作区的修改（未add）</span>
+git reset HEAD file.py            <span class="c"># 撤销暂存（已add，未commit）</span>
+git revert HEAD                   <span class="c"># 撤销最后一次提交（安全）</span>
+git stash                         <span class="c"># 临时保存工作区（常用！）</span>
+git stash pop                     <span class="c"># 恢复临时保存的工作区</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">2</div><h4>Commit 信息规范（面试加分！）</h4></div>
+    <div class="kp-body">
+      <div class="tip-card blue">
+        <h4>规范的commit信息格式（Conventional Commits）</h4>
+        <p>格式：<code>类型(范围): 描述</code></p>
+      </div>
+      <table class="simple-table">
+        <tr><th>类型</th><th>含义</th><th>例子</th></tr>
+        <tr><td>feat</td><td>新功能</td><td>feat(rpa): 新增订单自动审批流程</td></tr>
+        <tr><td>fix</td><td>修复Bug</td><td>fix(etl): 修复金额列空值处理错误</td></tr>
+        <tr><td>refactor</td><td>重构代码</td><td>refactor: 抽取公共的API请求函数</td></tr>
+        <tr><td>docs</td><td>文档更新</td><td>docs: 更新README安装说明</td></tr>
+        <tr><td>test</td><td>添加测试</td><td>test: 添加数据清洗函数单元测试</td></tr>
+        <tr><td>chore</td><td>构建/工具</td><td>chore: 更新Python依赖版本</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">3</div><h4>.gitignore 文件（必须配置！）</h4></div>
+    <div class="kp-body">
+      <p>有些文件不该提交到Git：密码、API Key、临时文件、大数据文件……用.gitignore告诉Git忽略这些。</p>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">.gitignore</div></div>
+        <div class="code-body"><span class="c"># Python相关</span>
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+<span class="c"># 环境变量（包含密码！绝对不能提交！）</span>
+.env
+.env.local
+*.env
+
+<span class="c"># 数据文件（可能很大）</span>
+*.xlsx
+*.csv
+data/
+output/
+
+<span class="c"># 日志文件</span>
+logs/
+*.log
+
+<span class="c"># IDE配置</span>
+.vscode/
+.idea/
+*.swp
+
+<span class="c"># 虚拟环境</span>
+venv/
+.venv/
+env/</div>
+      </div>
+      <div class="danger-box">永远不要把包含密码、API Key的文件提交到Git！一旦推到GitHub，即使删除了也可能被人爬取到。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 5.2 日志系统 ===== -->
+<div class="section">
+  <h2 class="sec-title">📋 5.2 专业日志系统设计</h2>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">1</div><h4>使用loguru（比标准logging更简单）</h4></div>
+    <div class="kp-body">
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="c"># 安装：pip install loguru</span>
+<span class="k">from</span> loguru <span class="k">import</span> logger
+<span class="k">import</span> sys
+<span class="k">import</span> os
+
+<span class="c"># ===== 配置日志（在程序入口处配置一次）=====</span>
+os.<span class="f">makedirs</span>(<span class="s">"logs"</span>, exist_ok=<span class="k">True</span>)
+
+<span class="c"># 移除默认handler</span>
+logger.<span class="f">remove</span>()
+
+<span class="c"># 添加控制台输出（带颜色）</span>
+logger.<span class="f">add</span>(sys.stdout, level=<span class="s">"INFO"</span>, colorize=<span class="k">True</span>,
+           format=<span class="s">"<green>{time:HH:mm:ss}</green> | <level>{level}</level> | {message}"</span>)
+
+<span class="c"># 添加文件输出（每天一个文件，保留30天）</span>
+logger.<span class="f">add</span>(
+    <span class="s">"logs/{time:YYYY-MM-DD}.log"</span>,
+    rotation=<span class="s">"00:00"</span>,         <span class="c"># 每天午夜切换新文件</span>
+    retention=<span class="s">"30 days"</span>,      <span class="c"># 保留30天</span>
+    encoding=<span class="s">"utf-8"</span>,
+    level=<span class="s">"DEBUG"</span>,
+    format=<span class="s">"{time:YYYY-MM-DD HH:mm:ss} | {level} | {function}:{line} | {message}"</span>
+)
+
+<span class="c"># ===== 使用日志 =====</span>
+logger.<span class="f">debug</span>(<span class="s">"调试信息：变量值={}"</span>, some_var)
+logger.<span class="f">info</span>(<span class="s">"开始处理第{}批数据，共{}条"</span>, batch_num, count)
+logger.<span class="f">success</span>(<span class="s">"✅ 订单{}处理成功"</span>, order_id)
+logger.<span class="f">warning</span>(<span class="s">"⚠️ 数据异常：{}"</span>, detail)
+logger.<span class="f">error</span>(<span class="s">"❌ 处理失败：{}"</span>, error_msg)
+logger.<span class="f">critical</span>(<span class="s">"💀 严重错误，程序即将停止"</span>)
+
+<span class="c"># 记录异常（带完整traceback）</span>
+<span class="k">try</span>:
+    <span class="f">risky_operation</span>()
+<span class="k">except</span> Exception <span class="k">as</span> e:
+    logger.<span class="f">exception</span>(<span class="s">"操作失败"</span>)   <span class="c"># 自动记录完整的异常堆栈</span>
+
+<span class="c"># ===== 结构化日志（便于后续分析）=====</span>
+<span class="c"># 在消息中加入关键字段，方便grep搜索</span>
+logger.<span class="f">info</span>(<span class="s">f"[ORDER] id={order_id} status=success amount={amount} customer={customer}"</span>)
+<span class="c"># grep "ORDER" logs/2024-01-15.log | grep "status=error"  就能快速找到所有失败订单</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 5.3 定时任务 ===== -->
+<div class="section">
+  <h2 class="sec-title">⏰ 5.3 定时任务详解</h2>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">1</div><h4>schedule库（简单场景）</h4></div>
+    <div class="kp-body">
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="c"># 安装：pip install schedule</span>
+<span class="k">import</span> schedule
+<span class="k">import</span> time
+<span class="k">from</span> loguru <span class="k">import</span> logger
+
+<span class="k">def</span> <span class="f">morning_sync</span>():
+    logger.<span class="f">info</span>(<span class="s">"执行早间数据同步..."</span>)
+    <span class="c"># 实际业务逻辑</span>
+
+<span class="k">def</span> <span class="f">hourly_check</span>():
+    logger.<span class="f">info</span>(<span class="s">"执行每小时检查..."</span>)
+
+<span class="k">def</span> <span class="f">weekly_report</span>():
+    logger.<span class="f">info</span>(<span class="s">"生成周报..."</span>)
+
+<span class="c"># 设置各种定时规则</span>
+schedule.every().<span class="f">day.at</span>(<span class="s">"08:00"</span>).<span class="f">do</span>(<span class="v">morning_sync</span>)    <span class="c"># 每天8:00</span>
+schedule.every().<span class="f">day.at</span>(<span class="s">"18:00"</span>).<span class="f">do</span>(<span class="v">morning_sync</span>)    <span class="c"># 每天18:00也跑一次</span>
+schedule.every(<span class="n">30</span>).<span class="f">minutes.do</span>(<span class="v">hourly_check</span>)          <span class="c"># 每30分钟</span>
+schedule.every().<span class="f">monday.at</span>(<span class="s">"09:00"</span>).<span class="f">do</span>(<span class="v">weekly_report</span>) <span class="c"># 每周一9点</span>
+
+logger.<span class="f">info</span>(<span class="s">"定时任务已启动，等待调度..."</span>)
+<span class="k">while</span> <span class="k">True</span>:
+    schedule.<span class="f">run_pending</span>()
+    time.<span class="f">sleep</span>(<span class="n">60</span>)   <span class="c"># 每分钟检查一次是否有任务需要执行</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">2</div><h4>Windows任务计划程序（生产推荐）</h4></div>
+    <div class="kp-body">
+      <p>如果在Windows服务器部署，用Windows任务计划程序比schedule更可靠（程序崩了会自动重启）。</p>
+      <div class="step-list">
+        <div class="step-row">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>搜索"任务计划程序"并打开</h4>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>创建基本任务</h4>
+            <p>操作 → 创建基本任务 → 填写名称和触发时间</p>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>设置操作</h4>
+            <p>程序：<code>C:\Python\python.exe</code><br>
+            参数：<code>C:\scripts\daily_sync.py</code></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 5.4 告警通知 ===== -->
+<div class="section">
+  <h2 class="sec-title">🔔 5.4 异常监控与告警通知</h2>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">1</div><h4>钉钉机器人告警</h4></div>
+    <div class="kp-body">
+      <div class="step-list">
+        <div class="step-row">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>创建钉钉机器人</h4>
+            <p>钉钉群 → 群设置 → 机器人 → 添加机器人 → 自定义机器人 → 复制Webhook URL</p>
+          </div>
+        </div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="k">import</span> requests
+<span class="k">from</span> datetime <span class="k">import</span> datetime
+
+<span class="v">DING_WEBHOOK</span> = <span class="s">"https://oapi.dingtalk.com/robot/send?access_token=你的token"</span>
+
+<span class="k">def</span> <span class="f">send_alert</span>(<span class="v">title</span>: str, <span class="v">content</span>: str, <span class="v">is_error</span>: bool = <span class="k">False</span>):
+    <span class="s">"""发送钉钉告警"""</span>
+    <span class="v">emoji</span> = <span class="s">"🚨"</span> <span class="k">if</span> <span class="v">is_error</span> <span class="k">else</span> <span class="s">"✅"</span>
+    <span class="v">payload</span> = {
+        <span class="s">"msgtype"</span>: <span class="s">"markdown"</span>,
+        <span class="s">"markdown"</span>: {
+            <span class="s">"title"</span>: <span class="s">f"{emoji} {title}"</span>,
+            <span class="s">"text"</span>: <span class="s">f"## {emoji} {title}\n\n{content}\n\n> 时间：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"</span>
+        }
+    }
+    <span class="k">try</span>:
+        <span class="v">resp</span> = requests.<span class="f">post</span>(<span class="v">DING_WEBHOOK</span>, json=<span class="v">payload</span>, timeout=<span class="n">5</span>)
+        <span class="k">if</span> <span class="v">resp</span>.<span class="f">json</span>().<span class="f">get</span>(<span class="s">"errcode"</span>) == <span class="n">0</span>:
+            <span class="f">print</span>(<span class="s">"✅ 钉钉通知发送成功"</span>)
+        <span class="k">else</span>:
+            <span class="f">print</span>(<span class="s">f"❌ 发送失败：{resp.text}"</span>)
+    <span class="k">except</span> Exception <span class="k">as</span> e:
+        <span class="f">print</span>(<span class="s">f"❌ 网络错误：{e}"</span>)
+
+<span class="c"># 使用示例</span>
+<span class="f">send_alert</span>(<span class="s">"数据同步完成"</span>, <span class="s">"本次同步：成功100条，失败0条"</span>)
+<span class="f">send_alert</span>(<span class="s">"数据同步异常"</span>, <span class="s">"**错误信息：** 数据库连接超时\n**建议：** 检查数据库状态"</span>, is_error=<span class="k">True</span>)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">2</div><h4>完整的异常监控装饰器</h4></div>
+    <div class="kp-body">
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="k">import</span> functools
+<span class="k">from</span> loguru <span class="k">import</span> logger
+
+<span class="k">def</span> <span class="f">monitor_task</span>(<span class="v">task_name</span>: str):
+    <span class="s">"""任务监控装饰器：自动记录日志，出错时发告警"""</span>
+    <span class="k">def</span> <span class="f">decorator</span>(<span class="v">func</span>):
+        @functools.<span class="f">wraps</span>(<span class="v">func</span>)
+        <span class="k">def</span> <span class="f">wrapper</span>(*args, **kwargs):
+            <span class="v">start</span> = <span class="f">datetime</span>.<span class="f">now</span>()
+            logger.<span class="f">info</span>(<span class="s">f"[{task_name}] 开始执行"</span>)
+            <span class="k">try</span>:
+                <span class="v">result</span> = <span class="f">func</span>(*args, **kwargs)
+                <span class="v">elapsed</span> = (datetime.<span class="f">now</span>() - <span class="v">start</span>).seconds
+                logger.<span class="f">success</span>(<span class="s">f"[{task_name}] 执行成功，耗时{elapsed}秒"</span>)
+                <span class="f">send_alert</span>(<span class="s">f"{task_name}执行成功"</span>, <span class="s">f"耗时：{elapsed}秒"</span>)
+                <span class="k">return</span> <span class="v">result</span>
+            <span class="k">except</span> Exception <span class="k">as</span> e:
+                logger.<span class="f">exception</span>(<span class="s">f"[{task_name}] 执行失败"</span>)
+                <span class="f">send_alert</span>(<span class="s">f"{task_name}执行失败"</span>, <span class="s">f"错误：{str(e)}"</span>, is_error=<span class="k">True</span>)
+                <span class="k">raise</span>
+        <span class="k">return</span> <span class="v">wrapper</span>
+    <span class="k">return</span> <span class="v">decorator</span>
+
+<span class="c"># 使用：在函数上加一行装饰器即可自动监控</span>
+@<span class="f">monitor_task</span>(<span class="s">"每日数据同步"</span>)
+<span class="k">def</span> <span class="f">daily_sync</span>():
+    <span class="c"># 正常写业务代码，不需要写任何日志和告警代码</span>
+    <span class="f">fetch_data</span>()
+    <span class="f">process_data</span>()
+    <span class="f">save_result</span>()</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 5.5 环境变量管理 ===== -->
+<div class="section">
+  <h2 class="sec-title">🔐 5.5 配置与密码管理</h2>
+
+  <div class="danger-box">永远不要把密码、API Key、数据库连接字符串写死在代码里！要用环境变量或配置文件管理。</div>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">1</div><h4>使用.env文件管理配置</h4></div>
+    <div class="kp-body">
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">.env文件</div></div>
+        <div class="code-body"><span class="c"># .env 文件（在.gitignore里排除它！）</span>
+DB_HOST=192.168.1.100
+DB_PORT=3306
+DB_USER=admin
+DB_PASSWORD=your_password_here
+DB_NAME=production
+
+API_KEY=your-api-key-here
+DING_WEBHOOK=https://oapi.dingtalk.com/robot/send?access_token=xxx
+
+DEBUG=false</div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="c"># 安装：pip install python-dotenv</span>
+<span class="k">from</span> dotenv <span class="k">import</span> load_dotenv
+<span class="k">import</span> os
+
+<span class="f">load_dotenv</span>()   <span class="c"># 自动读取.env文件</span>
+
+<span class="c"># 读取配置</span>
+<span class="v">DB_HOST</span> = os.<span class="f">getenv</span>(<span class="s">"DB_HOST"</span>)
+<span class="v">DB_PASSWORD</span> = os.<span class="f">getenv</span>(<span class="s">"DB_PASSWORD"</span>)
+<span class="v">API_KEY</span> = os.<span class="f">getenv</span>(<span class="s">"API_KEY"</span>)
+
+<span class="c"># 读取时可以设置默认值</span>
+<span class="v">DEBUG</span> = os.<span class="f">getenv</span>(<span class="s">"DEBUG"</span>, <span class="s">"false"</span>).lower() == <span class="s">"true"</span>
+
+<span class="c"># 数据库连接字符串用环境变量拼接</span>
+<span class="v">DB_URL</span> = <span class="s">f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}"</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exercise">
+    <h4>🏋️ 章节练习</h4>
+    <ol>
+      <li>在GitHub/Gitee创建一个仓库，把之前写的Python脚本用Git管理，练习add/commit/push的完整流程</li>
+      <li>给脚本加上loguru日志：INFO级别记录正常流程，ERROR级别记录异常，输出到文件和控制台</li>
+      <li>注册钉钉，创建一个测试群，配置机器人，用Python发一条测试消息</li>
+      <li>把之前的ETL脚本改造成生产级：加.env配置管理，加日志，加钉钉告警，加schedule定时运行</li>
+    </ol>
+  </div>
+</div>
+
+</div>
+<div class="nav-footer">
+  <a href="ch4-etl.html" class="nav-btn">← 上一章：数据ETL</a>
+  <a href="index.html" class="nav-btn">🏠 目录</a>
+  <a href="ch6-projects.html" class="nav-btn primary">下一章：完整项目 →</a>
+</div>
+</body>
+</html>

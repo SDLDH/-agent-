@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>第6章 · 完整项目实战</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body>
+<div class="page-header ch6">
+  <a href="index.html" class="back-btn">← 返回目录</a>
+  <div class="ch-num">第 6 章</div>
+  <h1>完整项目实战</h1>
+  <p>5个完整项目 · 从需求到交付 · 代码全集 · 面试展示素材</p>
+</div>
+<div class="content">
+
+<div class="section">
+  <h2 class="sec-title">🗂️ 项目总览</h2>
+  <table class="simple-table">
+    <tr>
+      <th>项目</th><th>技术栈</th><th>难度</th><th>适合作为</th>
+    </tr>
+    <tr><td><strong>项目1：每日数据报表自动化</strong></td><td>Python + Pandas + smtplib</td><td>⭐⭐</td><td>第一个入门项目</td></tr>
+    <tr><td><strong>项目2：网页数据采集机器人</strong></td><td>Selenium + Pandas + MySQL</td><td>⭐⭐⭐</td><td>RPA能力展示</td></tr>
+    <tr><td><strong>项目3：AI智能工单处理</strong></td><td>LangChain + DeepSeek API</td><td>⭐⭐⭐</td><td>AI Agent能力展示</td></tr>
+    <tr><td><strong>项目4：ETL数据管道</strong></td><td>Pandas + SQLAlchemy + schedule</td><td>⭐⭐⭐</td><td>数据处理能力展示</td></tr>
+    <tr><td><strong>项目5：自动化监控告警</strong></td><td>Python + 钉钉 + schedule</td><td>⭐⭐⭐</td><td>工程化能力展示</td></tr>
+  </table>
+</div>
+
+<!-- ===== 项目1 ===== -->
+<div class="section">
+  <h2 class="sec-title">📊 项目1：每日数据报表自动化</h2>
+
+  <div class="tip-card blue">
+    <h4>需求描述</h4>
+    <p>每天早上8点，自动读取销售数据CSV文件，生成包含各部门汇总、TOP10客户、同比环比的Excel报表，发送给管理层邮件。</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python — daily_report.py</div></div>
+    <div class="code-body"><span class="c">"""
+项目1：每日销售报表自动化
+功能：读取CSV → 数据处理 → 生成格式化Excel → 发送邮件
+"""</span>
+<span class="k">import</span> pandas <span class="k">as</span> pd
+<span class="k">import</span> smtplib
+<span class="k">import</span> schedule
+<span class="k">import</span> time
+<span class="k">import</span> os
+<span class="k">from</span> email.mime.multipart <span class="k">import</span> MIMEMultipart
+<span class="k">from</span> email.mime.text <span class="k">import</span> MIMEText
+<span class="k">from</span> email.mime.base <span class="k">import</span> MIMEBase
+<span class="k">from</span> email <span class="k">import</span> encoders
+<span class="k">from</span> datetime <span class="k">import</span> datetime, timedelta
+<span class="k">from</span> openpyxl.styles <span class="k">import</span> Font, PatternFill, Alignment
+<span class="k">from</span> openpyxl.utils <span class="k">import</span> get_column_letter
+<span class="k">from</span> loguru <span class="k">import</span> logger
+<span class="k">from</span> dotenv <span class="k">import</span> load_dotenv
+
+load_dotenv()
+
+<span class="c"># ===== 配置 =====</span>
+<span class="v">EMAIL_HOST</span> = <span class="s">"smtp.qq.com"</span>
+<span class="v">EMAIL_USER</span> = os.<span class="f">getenv</span>(<span class="s">"EMAIL_USER"</span>)
+<span class="v">EMAIL_PASS</span> = os.<span class="f">getenv</span>(<span class="s">"EMAIL_PASS"</span>)
+<span class="v">RECIPIENTS</span> = [<span class="s">"manager@company.com"</span>, <span class="s">"ceo@company.com"</span>]
+
+<span class="k">def</span> <span class="f">generate_report</span>(<span class="v">data_file</span>: str) -> str:
+    <span class="s">"""生成格式化Excel报表，返回文件路径"""</span>
+    logger.<span class="f">info</span>(<span class="s">f"读取数据文件：{data_file}"</span>)
+    <span class="v">df</span> = pd.<span class="f">read_csv</span>(<span class="v">data_file</span>, encoding=<span class="s">"utf-8"</span>)
+    
+    <span class="c"># 数据清洗</span>
+    <span class="v">df</span>[<span class="s">"日期"</span>] = pd.<span class="f">to_datetime</span>(<span class="v">df</span>[<span class="s">"日期"</span>])
+    <span class="v">df</span>[<span class="s">"金额"</span>] = pd.<span class="f">to_numeric</span>(<span class="v">df</span>[<span class="s">"金额"</span>], errors=<span class="s">"coerce"</span>).<span class="f">fillna</span>(<span class="n">0</span>)
+    <span class="v">df</span> = <span class="v">df</span>.<span class="f">drop_duplicates</span>(subset=[<span class="s">"订单号"</span>])
+    
+    <span class="c"># 获取今天和昨天的数据</span>
+    <span class="v">today</span> = datetime.<span class="f">now</span>().<span class="f">date</span>()
+    <span class="v">yesterday</span> = <span class="v">today</span> - timedelta(days=<span class="n">1</span>)
+    <span class="v">df_today</span> = <span class="v">df</span>[<span class="v">df</span>[<span class="s">"日期"</span>].<span class="f">dt</span>.date == <span class="v">yesterday</span>]   <span class="c"># 取昨天数据（今天早上跑）</span>
+    
+    <span class="c"># 部门汇总</span>
+    <span class="v">dept_summary</span> = <span class="v">df_today</span>.<span class="f">groupby</span>(<span class="s">"部门"</span>).<span class="f">agg</span>({
+        <span class="s">"金额"</span>: [<span class="s">"sum"</span>, <span class="s">"mean"</span>, <span class="s">"count"</span>]
+    }).<span class="f">round</span>(<span class="n">2</span>)
+    <span class="v">dept_summary</span>.columns = [<span class="s">"销售总额"</span>, <span class="s">"平均单价"</span>, <span class="s">"订单数量"</span>]
+    <span class="v">dept_summary</span> = <span class="v">dept_summary</span>.<span class="f">sort_values</span>(<span class="s">"销售总额"</span>, ascending=<span class="k">False</span>)
+    
+    <span class="c"># TOP10客户</span>
+    <span class="v">top_customers</span> = <span class="v">df_today</span>.<span class="f">groupby</span>(<span class="s">"客户名"</span>)[<span class="s">"金额"</span>].<span class="f">sum</span>().<span class="f">sort_values</span>(ascending=<span class="k">False</span>).<span class="f">head</span>(<span class="n">10</span>)
+    
+    <span class="c"># 生成Excel</span>
+    <span class="v">filename</span> = <span class="s">f"销售日报_{yesterday.strftime('%Y%m%d')}.xlsx"</span>
+    <span class="k">with</span> pd.<span class="f">ExcelWriter</span>(<span class="v">filename</span>, engine=<span class="s">"openpyxl"</span>) <span class="k">as</span> <span class="v">writer</span>:
+        <span class="v">df_today</span>.<span class="f">to_excel</span>(<span class="v">writer</span>, sheet_name=<span class="s">"明细数据"</span>, index=<span class="k">False</span>)
+        <span class="v">dept_summary</span>.<span class="f">to_excel</span>(<span class="v">writer</span>, sheet_name=<span class="s">"部门汇总"</span>)
+        <span class="v">top_customers</span>.<span class="f">to_excel</span>(<span class="v">writer</span>, sheet_name=<span class="s">"TOP10客户"</span>)
+        
+        <span class="c"># 美化表头</span>
+        <span class="k">for</span> <span class="v">sheet_name</span> <span class="k">in</span> <span class="v">writer</span>.sheets:
+            <span class="v">ws</span> = <span class="v">writer</span>.sheets[<span class="v">sheet_name</span>]
+            <span class="k">for</span> <span class="v">cell</span> <span class="k">in</span> <span class="v">ws</span>[<span class="n">1</span>]:
+                <span class="v">cell</span>.font = Font(bold=<span class="k">True</span>, color=<span class="s">"FFFFFF"</span>)
+                <span class="v">cell</span>.fill = PatternFill(start_color=<span class="s">"1F4E79"</span>, fill_type=<span class="s">"solid"</span>)
+    
+    logger.<span class="f">success</span>(<span class="s">f"✅ 报表已生成：{filename}"</span>)
+    <span class="k">return</span> <span class="v">filename</span>
+
+<span class="k">def</span> <span class="f">send_email</span>(<span class="v">subject</span>: str, <span class="v">body</span>: str, <span class="v">attachment</span>: str):
+    <span class="s">"""发送带附件的邮件"""</span>
+    <span class="v">msg</span> = <span class="f">MIMEMultipart</span>()
+    <span class="v">msg</span>[<span class="s">"From"</span>] = <span class="v">EMAIL_USER</span>
+    <span class="v">msg</span>[<span class="s">"To"</span>] = <span class="s">", "</span>.<span class="f">join</span>(<span class="v">RECIPIENTS</span>)
+    <span class="v">msg</span>[<span class="s">"Subject"</span>] = <span class="v">subject</span>
+    <span class="v">msg</span>.<span class="f">attach</span>(<span class="f">MIMEText</span>(<span class="v">body</span>, <span class="s">"html"</span>, <span class="s">"utf-8"</span>))
+    
+    <span class="c"># 添加附件</span>
+    <span class="k">with</span> <span class="f">open</span>(<span class="v">attachment</span>, <span class="s">"rb"</span>) <span class="k">as</span> <span class="v">f</span>:
+        <span class="v">part</span> = <span class="f">MIMEBase</span>(<span class="s">"application"</span>, <span class="s">"octet-stream"</span>)
+        <span class="v">part</span>.<span class="f">set_payload</span>(<span class="v">f</span>.<span class="f">read</span>())
+    encoders.<span class="f">encode_base64</span>(<span class="v">part</span>)
+    <span class="v">part</span>.<span class="f">add_header</span>(<span class="s">"Content-Disposition"</span>, <span class="s">f"attachment; filename={os.path.basename(attachment)}"</span>)
+    <span class="v">msg</span>.<span class="f">attach</span>(<span class="v">part</span>)
+    
+    <span class="k">with</span> smtplib.<span class="f">SMTP_SSL</span>(<span class="v">EMAIL_HOST</span>, <span class="n">465</span>) <span class="k">as</span> <span class="v">server</span>:
+        <span class="v">server</span>.<span class="f">login</span>(<span class="v">EMAIL_USER</span>, <span class="v">EMAIL_PASS</span>)
+        <span class="v">server</span>.<span class="f">sendmail</span>(<span class="v">EMAIL_USER</span>, <span class="v">RECIPIENTS</span>, <span class="v">msg</span>.<span class="f">as_string</span>())
+    logger.<span class="f">success</span>(<span class="s">"✅ 邮件发送成功"</span>)
+
+<span class="k">def</span> <span class="f">daily_job</span>():
+    <span class="k">try</span>:
+        <span class="v">report_file</span> = <span class="f">generate_report</span>(<span class="s">"./data/sales.csv"</span>)
+        <span class="v">email_body</span> = <span class="s">f"""
+        <h3>销售日报 - {datetime.now().strftime('%Y年%m月%d日')}</h3>
+        <p>请查收今日销售报表，详见附件。</p>
+        <p>如有问题请联系数据组。</p>
+        """</span>
+        <span class="f">send_email</span>(<span class="s">f"销售日报 {datetime.now().strftime('%m/%d')}"</span>, <span class="v">email_body</span>, <span class="v">report_file</span>)
+    <span class="k">except</span> Exception <span class="k">as</span> e:
+        logger.<span class="f">exception</span>(<span class="s">"日报任务失败"</span>)
+
+<span class="c"># 定时执行</span>
+schedule.every().<span class="f">day.at</span>(<span class="s">"08:00"</span>).<span class="f">do</span>(<span class="v">daily_job</span>)
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    <span class="v">daily_job</span>()    <span class="c"># 先手动运行一次测试</span>
+    <span class="k">while</span> <span class="k">True</span>:
+        schedule.<span class="f">run_pending</span>()
+        time.<span class="f">sleep</span>(<span class="n">60</span>)</div>
+  </div>
+</div>
+
+<!-- ===== 项目3 AI工单 ===== -->
+<div class="section">
+  <h2 class="sec-title">🧠 项目3：AI智能工单处理系统</h2>
+
+  <div class="tip-card purple">
+    <h4>需求描述</h4>
+    <p>收到业务部门的工单邮件 → AI自动分类和提取信息 → 查询知识库找解决方案 → 生成标准化回复 → 自动发送回复邮件。这是最贴合岗位需求的项目！</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python — ticket_handler.py</div></div>
+    <div class="code-body"><span class="c">"""
+项目3：AI智能工单处理系统
+技术栈：OpenAI/DeepSeek API + Python
+"""</span>
+<span class="k">import</span> json
+<span class="k">from</span> openai <span class="k">import</span> OpenAI
+<span class="k">from</span> loguru <span class="k">import</span> logger
+<span class="k">from</span> datetime <span class="k">import</span> datetime
+
+<span class="v">client</span> = <span class="f">OpenAI</span>(
+    api_key=<span class="s">"your-deepseek-key"</span>,
+    base_url=<span class="s">"https://api.deepseek.com/v1"</span>
+)
+
+<span class="c"># 知识库（实际项目可以从数据库或文件读取）</span>
+<span class="v">KNOWLEDGE_BASE</span> = {
+    <span class="s">"账号问题"</span>: <span class="s">"账号相关问题请联系IT部门，邮箱：it@company.com，处理时间1个工作日"</span>,
+    <span class="s">"数据问题"</span>: <span class="s">"数据问题请提供：数据表名、时间范围、具体异常描述，数据组会在2小时内响应"</span>,
+    <span class="s">"报表问题"</span>: <span class="s">"报表显示异常请截图，并说明报表名称和查看时间，BI团队工作日内处理"</span>,
+    <span class="s">"系统故障"</span>: <span class="s">"系统故障请立即拨打运维热线：xxxx，同时提交此工单记录"</span>,
+}
+
+<span class="k">def</span> <span class="f">classify_ticket</span>(<span class="v">content</span>: str) -> dict:
+    <span class="s">"""AI分类工单内容"""</span>
+    <span class="v">prompt</span> = <span class="s">f"""
+你是一个工单分类系统。请分析以下工单内容，提取关键信息。
+
+工单内容：
+{content}
+
+请以JSON格式输出（不要有其他文字）：
+{{
+    "category": "工单类别（账号问题/数据问题/报表问题/系统故障/其他）",
+    "priority": "优先级（高/中/低）",
+    "requester": "申请人（从内容推断，不确定填未知）",
+    "summary": "问题摘要（50字以内）",
+    "key_info": "关键信息提取（如涉及的系统、时间、数据范围等）"
+}}
+"""</span>
+    <span class="v">response</span> = <span class="v">client</span>.chat.completions.<span class="f">create</span>(
+        model=<span class="s">"deepseek-chat"</span>,
+        messages=[{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: <span class="v">prompt</span>}],
+        temperature=<span class="n">0</span>
+    )
+    <span class="k">try</span>:
+        <span class="k">return</span> json.<span class="f">loads</span>(<span class="v">response</span>.choices[<span class="n">0</span>].message.content)
+    <span class="k">except</span>:
+        <span class="k">return</span> {<span class="s">"category"</span>: <span class="s">"其他"</span>, <span class="s">"priority"</span>: <span class="s">"中"</span>, <span class="s">"summary"</span>: <span class="v">content</span>[:<span class="n">50</span>]}
+
+<span class="k">def</span> <span class="f">generate_reply</span>(<span class="v">ticket_content</span>: str, <span class="v">classify_result</span>: dict) -> str:
+    <span class="s">"""AI生成标准化回复"""</span>
+    <span class="v">category</span> = <span class="v">classify_result</span>.<span class="f">get</span>(<span class="s">"category"</span>, <span class="s">"其他"</span>)
+    <span class="v">kb_answer</span> = <span class="v">KNOWLEDGE_BASE</span>.<span class="f">get</span>(<span class="v">category</span>, <span class="s">"感谢您的反馈，我们会尽快处理。"</span>)
+    
+    <span class="v">prompt</span> = <span class="s">f"""
+你是一个专业的客户服务人员，请根据工单内容和处理规范生成一封礼貌的回复邮件。
+
+原始工单：
+{ticket_content}
+
+工单分类：{category}
+优先级：{classify_result.get('priority', '中')}
+问题摘要：{classify_result.get('summary', '')}
+
+处理规范（参考，不要照抄）：
+{kb_answer}
+
+要求：
+1. 语气专业友好
+2. 确认问题已收到
+3. 说明处理方式和预计时间
+4. 如需提供更多信息，明确说明需要什么
+5. 用中文，格式清晰
+"""</span>
+    
+    <span class="v">response</span> = <span class="v">client</span>.chat.completions.<span class="f">create</span>(
+        model=<span class="s">"deepseek-chat"</span>,
+        messages=[{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: <span class="v">prompt</span>}],
+        temperature=<span class="n">0.7</span>
+    )
+    <span class="k">return</span> <span class="v">response</span>.choices[<span class="n">0</span>].message.content
+
+<span class="k">def</span> <span class="f">process_ticket</span>(<span class="v">ticket_content</span>: str) -> dict:
+    <span class="s">"""完整的工单处理流程"""</span>
+    logger.<span class="f">info</span>(<span class="s">"开始处理工单..."</span>)
+    
+    <span class="c"># 1. 分类提取</span>
+    <span class="v">classify_result</span> = <span class="f">classify_ticket</span>(<span class="v">ticket_content</span>)
+    logger.<span class="f">info</span>(<span class="s">f"工单分类：{classify_result}"</span>)
+    
+    <span class="c"># 2. 生成回复</span>
+    <span class="v">reply</span> = <span class="f">generate_reply</span>(<span class="v">ticket_content</span>, <span class="v">classify_result</span>)
+    
+    <span class="c"># 3. 保存记录</span>
+    <span class="v">record</span> = {
+        <span class="s">"ticket_id"</span>: <span class="s">f"TK-{datetime.now().strftime('%Y%m%d%H%M%S')}"</span>,
+        <span class="s">"content"</span>: <span class="v">ticket_content</span>,
+        <span class="s">"classify"</span>: <span class="v">classify_result</span>,
+        <span class="s">"reply"</span>: <span class="v">reply</span>,
+        <span class="s">"created_at"</span>: datetime.<span class="f">now</span>().<span class="f">isoformat</span>()
+    }
+    
+    <span class="c"># 实际项目：保存到数据库</span>
+    <span class="c"># save_to_db(record)</span>
+    
+    logger.<span class="f">success</span>(<span class="s">f"✅ 工单 {record['ticket_id']} 处理完成"</span>)
+    <span class="k">return</span> <span class="v">record</span>
+
+<span class="c"># 测试</span>
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    <span class="v">test_ticket</span> = <span class="s">"""
+    您好，我是运营部的小李，
+    今天我在系统里查看上周的销售数据时，发现2024年1月10日到1月15日的数据显示不出来，
+    页面显示"数据加载失败"，但其他时间段都正常。
+    请帮忙排查一下，这些数据很重要，今天要汇报给总经理。
+    谢谢！
+    """</span>
+    
+    <span class="v">result</span> = <span class="f">process_ticket</span>(<span class="v">test_ticket</span>)
+    <span class="f">print</span>(<span class="s">"\n===== 工单分类 ====="</span>)
+    <span class="f">print</span>(json.<span class="f">dumps</span>(<span class="v">result</span>[<span class="s">"classify"</span>], ensure_ascii=<span class="k">False</span>, indent=<span class="n">2</span>))
+    <span class="f">print</span>(<span class="s">"\n===== AI生成回复 ====="</span>)
+    <span class="f">print</span>(<span class="v">result</span>[<span class="s">"reply"</span>])</div>
+  </div>
+
+  <div class="tip-card green">
+    <h4>🏆 这个项目为什么能打动面试官？</h4>
+    <p>它完整体现了岗位JD的核心需求：<br>
+    ✅ 使用AI工具（大模型API）&nbsp;&nbsp; ✅ 数据处理（结构化提取）&nbsp;&nbsp; ✅ 自动化流程（接收→处理→输出）<br>
+    ✅ 工程化（日志、异常处理、记录存档）&nbsp;&nbsp; ✅ 跨部门服务场景（工单处理）</p>
+  </div>
+
+  <div class="exercise">
+    <h4>🏋️ 建议的学习项目路径（按顺序做）</h4>
+    <ol>
+      <li><strong>第1个</strong>：读一个你电脑上的Excel，用Pandas统计汇总，输出新Excel——验证基础能力</li>
+      <li><strong>第2个</strong>：用Selenium自动打开网页、登录、抓取数据——验证RPA能力</li>
+      <li><strong>第3个</strong>：调用DeepSeek API，做一个发票信息提取工具——验证AI能力</li>
+      <li><strong>第4个（面试作品）</strong>：整合以上能力，做一个完整的"自动采集→AI处理→生成报表→定时运行"的项目，上传GitHub</li>
+    </ol>
+  </div>
+</div>
+
+</div>
+<div class="nav-footer">
+  <a href="ch5-engineering.html" class="nav-btn">← 上一章：工程化</a>
+  <a href="index.html" class="nav-btn">🏠 目录</a>
+  <a href="ch7-interview.html" class="nav-btn primary">下一章：面试攻略 →</a>
+</div>
+</body>
+</html>

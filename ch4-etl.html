@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>第4章 · 数据处理ETL实战</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body>
+<div class="page-header ch4">
+  <a href="index.html" class="back-btn">← 返回目录</a>
+  <div class="ch-num">第 4 章</div>
+  <h1>数据处理 ETL 实战</h1>
+  <p>Pandas深度教程 · Excel自动化 · 数据清洗技巧 · SQL进阶 · 爬虫入门</p>
+</div>
+<div class="content">
+
+<div class="section">
+  <h2 class="sec-title">🐼 4.1 Pandas 深度教程</h2>
+
+  <div class="concept-box">
+    <div class="concept-icon">📊</div>
+    <div class="concept-body">
+      <h4>Pandas 是什么？</h4>
+      <p>Pandas是Python里处理表格数据的神器，可以理解为"会编程的超级Excel"。<br>
+      核心数据结构：<strong>DataFrame</strong>（二维表格，有行有列）和 <strong>Series</strong>（一维列表）。</p>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">1</div><h4>创建和读取数据</h4></div>
+    <div class="kp-body">
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="k">import</span> pandas <span class="k">as</span> pd
+<span class="k">import</span> numpy <span class="k">as</span> np
+
+<span class="c"># ===== 从字典创建DataFrame =====</span>
+<span class="v">df</span> = pd.<span class="f">DataFrame</span>({
+    <span class="s">"姓名"</span>: [<span class="s">"张三"</span>, <span class="s">"李四"</span>, <span class="s">"王五"</span>, <span class="s">"赵六"</span>],
+    <span class="s">"部门"</span>: [<span class="s">"财务"</span>, <span class="s">"运营"</span>, <span class="s">"财务"</span>, <span class="s">"技术"</span>],
+    <span class="s">"工资"</span>: [<span class="n">15000</span>, <span class="n">12000</span>, <span class="n">18000</span>, <span class="n">20000</span>],
+    <span class="s">"入职年份"</span>: [<span class="n">2020</span>, <span class="n">2022</span>, <span class="n">2019</span>, <span class="n">2021</span>]
+})
+
+<span class="c"># ===== 读取各种数据源 =====</span>
+df = pd.<span class="f">read_excel</span>(<span class="s">"数据.xlsx"</span>, sheet_name=<span class="s">"Sheet1"</span>)          <span class="c"># Excel</span>
+df = pd.<span class="f">read_excel</span>(<span class="s">"数据.xlsx"</span>, sheet_name=<span class="n">0</span>, skiprows=<span class="n">2</span>)   <span class="c"># 跳过前2行标题</span>
+df = pd.<span class="f">read_csv</span>(<span class="s">"数据.csv"</span>, encoding=<span class="s">"utf-8"</span>)               <span class="c"># CSV</span>
+df = pd.<span class="f">read_csv</span>(<span class="s">"数据.csv"</span>, encoding=<span class="s">"gbk"</span>)                 <span class="c"># 中文乱码时用gbk</span>
+
+<span class="c"># 读取多个Excel Sheet合并</span>
+<span class="v">sheets</span> = pd.<span class="f">read_excel</span>(<span class="s">"数据.xlsx"</span>, sheet_name=<span class="k">None</span>)  <span class="c"># 读取所有sheet，返回字典</span>
+<span class="v">df_all</span> = pd.<span class="f">concat</span>(<span class="v">sheets</span>.values(), ignore_index=<span class="k">True</span>) <span class="c"># 合并所有sheet</span>
+
+<span class="c"># ===== 查看数据基本信息 =====</span>
+<span class="f">print</span>(<span class="v">df</span>.<span class="f">head</span>(<span class="n">5</span>))        <span class="c"># 前5行</span>
+<span class="f">print</span>(<span class="v">df</span>.<span class="f">tail</span>(<span class="n">3</span>))        <span class="c"># 后3行</span>
+<span class="f">print</span>(<span class="v">df</span>.shape)          <span class="c"># (行数, 列数)</span>
+<span class="f">print</span>(<span class="v">df</span>.columns.<span class="f">tolist</span>()) <span class="c"># 所有列名</span>
+<span class="f">print</span>(<span class="v">df</span>.dtypes)          <span class="c"># 每列的数据类型</span>
+<span class="f">print</span>(<span class="v">df</span>.<span class="f">info</span>())           <span class="c"># 详细信息：列名、非空数量、类型</span>
+<span class="f">print</span>(<span class="v">df</span>.<span class="f">describe</span>())      <span class="c"># 数值列的统计摘要</span>
+<span class="f">print</span>(<span class="v">df</span>.<span class="f">isnull</span>().<span class="f">sum</span>())  <span class="c"># 每列空值数量</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">2</div><h4>数据选择与筛选</h4></div>
+    <div class="kp-body">
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="c"># ===== 选择列 =====</span>
+<span class="v">df</span>[<span class="s">"工资"</span>]                    <span class="c"># 单列（返回Series）</span>
+<span class="v">df</span>[[<span class="s">"姓名"</span>, <span class="s">"工资"</span>]]           <span class="c"># 多列（返回DataFrame）</span>
+
+<span class="c"># ===== 选择行 =====</span>
+<span class="v">df</span>.<span class="f">iloc</span>[<span class="n">0</span>]                    <span class="c"># 第1行（按位置）</span>
+<span class="v">df</span>.<span class="f">iloc</span>[<span class="n">2</span>:<span class="n">5</span>]                  <span class="c"># 第3-5行</span>
+<span class="v">df</span>.<span class="f">loc</span>[<span class="n">0</span>]                     <span class="c"># index为0的行（按标签）</span>
+
+<span class="c"># ===== 条件筛选（最重要！）=====</span>
+<span class="v">finance</span> = <span class="v">df</span>[<span class="v">df</span>[<span class="s">"部门"</span>] == <span class="s">"财务"</span>]           <span class="c"># 等于</span>
+<span class="v">high_salary</span> = <span class="v">df</span>[<span class="v">df</span>[<span class="s">"工资"</span>] > <span class="n">15000</span>]         <span class="c"># 大于</span>
+<span class="v">dept_list</span> = <span class="v">df</span>[<span class="v">df</span>[<span class="s">"部门"</span>].<span class="f">isin</span>([<span class="s">"财务"</span>, <span class="s">"技术"</span>])]  <span class="c"># 在列表中</span>
+<span class="v">not_ops</span> = <span class="v">df</span>[<span class="v">df</span>[<span class="s">"部门"</span>] != <span class="s">"运营"</span>]            <span class="c"># 不等于</span>
+
+<span class="c"># 多条件筛选（& 表示and，| 表示or）</span>
+<span class="v">result</span> = <span class="v">df</span>[(<span class="v">df</span>[<span class="s">"部门"</span>] == <span class="s">"财务"</span>) & (<span class="v">df</span>[<span class="s">"工资"</span>] > <span class="n">15000</span>)]
+<span class="v">result2</span> = <span class="v">df</span>[(<span class="v">df</span>[<span class="s">"部门"</span>] == <span class="s">"财务"</span>) | (<span class="v">df</span>[<span class="s">"部门"</span>] == <span class="s">"技术"</span>)]
+
+<span class="c"># 字符串筛选</span>
+<span class="v">contains_zhang</span> = <span class="v">df</span>[<span class="v">df</span>[<span class="s">"姓名"</span>].<span class="f">str</span>.<span class="f">contains</span>(<span class="s">"张"</span>)]    <span class="c"># 包含"张"</span>
+<span class="v">starts_with</span> = <span class="v">df</span>[<span class="v">df</span>[<span class="s">"姓名"</span>].<span class="f">str</span>.<span class="f">startswith</span>(<span class="s">"张"</span>)]   <span class="c"># 以"张"开头</span>
+
+<span class="c"># 空值筛选</span>
+<span class="v">has_null</span> = <span class="v">df</span>[<span class="v">df</span>[<span class="s">"工资"</span>].<span class="f">isnull</span>()]          <span class="c"># 工资为空</span>
+<span class="v">not_null</span> = <span class="v">df</span>[<span class="v">df</span>[<span class="s">"工资"</span>].<span class="f">notnull</span>()]         <span class="c"># 工资不为空</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">3</div><h4>数据清洗（最核心！）</h4></div>
+    <div class="kp-body">
+      <div class="tip-card orange">
+        <h4>数据清洗是ETL中工作量最大的部分，占总时间的60-80%</h4>
+        <p>真实数据总是脏乱差：有空值、有重复、格式不统一、有异常值……必须清洗才能用。</p>
+      </div>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="c"># ===== 处理重复数据 =====</span>
+<span class="f">print</span>(<span class="v">df</span>.<span class="f">duplicated</span>().<span class="f">sum</span>())            <span class="c"># 查看重复行数量</span>
+<span class="v">df</span> = <span class="v">df</span>.<span class="f">drop_duplicates</span>()               <span class="c"># 删除完全重复的行</span>
+<span class="v">df</span> = <span class="v">df</span>.<span class="f">drop_duplicates</span>(subset=[<span class="s">"订单号"</span>])  <span class="c"># 按指定列去重</span>
+<span class="v">df</span> = <span class="v">df</span>.<span class="f">drop_duplicates</span>(subset=[<span class="s">"订单号"</span>], keep=<span class="s">"last"</span>)  <span class="c"># 保留最后一条</span>
+
+<span class="c"># ===== 处理空值 =====</span>
+<span class="v">df</span>.<span class="f">isnull</span>().<span class="f">sum</span>()                         <span class="c"># 查看每列空值数</span>
+
+<span class="c"># 删除空值</span>
+<span class="v">df</span> = <span class="v">df</span>.<span class="f">dropna</span>()                          <span class="c"># 删除任何列有空值的行</span>
+<span class="v">df</span> = <span class="v">df</span>.<span class="f">dropna</span>(subset=[<span class="s">"订单号"</span>, <span class="s">"客户名"</span>]) <span class="c"># 只看关键列</span>
+<span class="v">df</span> = <span class="v">df</span>.<span class="f">dropna</span>(thresh=<span class="n">3</span>)                <span class="c"># 至少3个非空值才保留</span>
+
+<span class="c"># 填充空值</span>
+<span class="v">df</span>[<span class="s">"工资"</span>] = <span class="v">df</span>[<span class="s">"工资"</span>].<span class="f">fillna</span>(<span class="n">0</span>)             <span class="c"># 用0填充</span>
+<span class="v">df</span>[<span class="s">"部门"</span>] = <span class="v">df</span>[<span class="s">"部门"</span>].<span class="f">fillna</span>(<span class="s">"未知"</span>)         <span class="c"># 用字符串填充</span>
+<span class="v">df</span>[<span class="s">"工资"</span>] = <span class="v">df</span>[<span class="s">"工资"</span>].<span class="f">fillna</span>(<span class="v">df</span>[<span class="s">"工资"</span>].<span class="f">mean</span>()) <span class="c"># 用均值填充</span>
+<span class="v">df</span>[<span class="s">"工资"</span>] = <span class="v">df</span>[<span class="s">"工资"</span>].<span class="f">ffill</span>()              <span class="c"># 用前一个值填充（向前填充）</span>
+
+<span class="c"># ===== 类型转换 =====</span>
+<span class="v">df</span>[<span class="s">"工资"</span>] = pd.<span class="f">to_numeric</span>(<span class="v">df</span>[<span class="s">"工资"</span>], errors=<span class="s">"coerce"</span>)   <span class="c"># 非数字变NaN</span>
+<span class="v">df</span>[<span class="s">"日期"</span>] = pd.<span class="f">to_datetime</span>(<span class="v">df</span>[<span class="s">"日期"</span>], format=<span class="s">"%Y/%m/%d"</span>) <span class="c"># 字符串转日期</span>
+<span class="v">df</span>[<span class="s">"工资"</span>] = <span class="v">df</span>[<span class="s">"工资"</span>].<span class="f">astype</span>(<span class="k">int</span>)           <span class="c"># 转整数</span>
+<span class="v">df</span>[<span class="s">"工号"</span>] = <span class="v">df</span>[<span class="s">"工号"</span>].<span class="f">astype</span>(<span class="k">str</span>)           <span class="c"># 转字符串</span>
+
+<span class="c"># ===== 字符串清洗 =====</span>
+<span class="v">df</span>[<span class="s">"姓名"</span>] = <span class="v">df</span>[<span class="s">"姓名"</span>].<span class="f">str</span>.<span class="f">strip</span>()           <span class="c"># 去两端空格</span>
+<span class="v">df</span>[<span class="s">"部门"</span>] = <span class="v">df</span>[<span class="s">"部门"</span>].<span class="f">str</span>.<span class="f">strip</span>().<span class="f">str</span>.<span class="f">upper</span>() <span class="c"># 去空格并转大写</span>
+<span class="v">df</span>[<span class="s">"电话"</span>] = <span class="v">df</span>[<span class="s">"电话"</span>].<span class="f">str</span>.<span class="f">replace</span>(<span class="s">"-"</span>, <span class="s">""</span>)   <span class="c"># 删除破折号</span>
+<span class="v">df</span>[<span class="s">"金额"</span>] = <span class="v">df</span>[<span class="s">"金额"</span>].<span class="f">str</span>.<span class="f">replace</span>(<span class="s">"¥"</span>, <span class="s">""</span>).<span class="f">str</span>.<span class="f">replace</span>(<span class="s">","</span>, <span class="s">""</span>)  <span class="c"># 去货币符号</span>
+
+<span class="c"># ===== 异常值处理 =====</span>
+<span class="c"># 找出工资异常高的数据（超过3倍标准差）</span>
+<span class="v">mean</span> = <span class="v">df</span>[<span class="s">"工资"</span>].<span class="f">mean</span>()
+<span class="v">std</span> = <span class="v">df</span>[<span class="s">"工资"</span>].<span class="f">std</span>()
+<span class="v">outliers</span> = <span class="v">df</span>[(<span class="v">df</span>[<span class="s">"工资"</span>] > <span class="v">mean</span> + <span class="n">3</span> * <span class="v">std</span>) | (<span class="v">df</span>[<span class="s">"工资"</span>] < <span class="v">mean</span> - <span class="n">3</span> * <span class="v">std</span>)]
+<span class="f">print</span>(<span class="s">f"发现{len(outliers)}条异常数据"</span>)
+
+<span class="c"># 将异常值替换为边界值</span>
+<span class="v">df</span>[<span class="s">"工资"</span>] = <span class="v">df</span>[<span class="s">"工资"</span>].<span class="f">clip</span>(<span class="n">3000</span>, <span class="n">100000</span>)  <span class="c"># 限定在3000-100000之间</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">4</div><h4>数据分组统计与透视</h4></div>
+    <div class="kp-body">
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="c"># ===== groupby 分组统计 =====</span>
+<span class="c"># 按部门计算工资总和</span>
+<span class="v">dept_salary</span> = <span class="v">df</span>.<span class="f">groupby</span>(<span class="s">"部门"</span>)[<span class="s">"工资"</span>].<span class="f">sum</span>().<span class="f">reset_index</span>()
+
+<span class="c"># 按部门计算多个统计量</span>
+<span class="v">dept_stats</span> = <span class="v">df</span>.<span class="f">groupby</span>(<span class="s">"部门"</span>)[<span class="s">"工资"</span>].<span class="f">agg</span>([<span class="s">"sum"</span>, <span class="s">"mean"</span>, <span class="s">"max"</span>, <span class="s">"min"</span>, <span class="s">"count"</span>])
+
+<span class="c"># 按多列分组</span>
+<span class="v">multi_group</span> = <span class="v">df</span>.<span class="f">groupby</span>([<span class="s">"部门"</span>, <span class="s">"入职年份"</span>])[<span class="s">"工资"</span>].<span class="f">mean</span>()
+
+<span class="c"># 自定义聚合函数</span>
+<span class="v">custom</span> = <span class="v">df</span>.<span class="f">groupby</span>(<span class="s">"部门"</span>).<span class="f">agg</span>({
+    <span class="s">"工资"</span>: [<span class="s">"sum"</span>, <span class="s">"mean"</span>],
+    <span class="s">"姓名"</span>: <span class="s">"count"</span>   <span class="c"># 计算人数</span>
+})
+
+<span class="c"># ===== pivot_table 透视表 =====</span>
+<span class="v">pivot</span> = pd.<span class="f">pivot_table</span>(
+    <span class="v">df</span>,
+    values=<span class="s">"工资"</span>,          <span class="c"># 统计的值</span>
+    index=<span class="s">"部门"</span>,            <span class="c"># 行</span>
+    columns=<span class="s">"入职年份"</span>,       <span class="c"># 列</span>
+    aggfunc=<span class="s">"mean"</span>,         <span class="c"># 统计方法</span>
+    fill_value=<span class="n">0</span>            <span class="c"># 空值填0</span>
+)
+
+<span class="c"># ===== 表格合并（类似SQL JOIN）=====</span>
+<span class="v">df_orders</span> = pd.<span class="f">read_excel</span>(<span class="s">"orders.xlsx"</span>)
+<span class="v">df_customers</span> = pd.<span class="f">read_excel</span>(<span class="s">"customers.xlsx"</span>)
+
+<span class="c"># 内连接（只保留两表都有的）</span>
+<span class="v">merged</span> = pd.<span class="f">merge</span>(<span class="v">df_orders</span>, <span class="v">df_customers</span>, on=<span class="s">"customer_id"</span>, how=<span class="s">"inner"</span>)
+
+<span class="c"># 左连接（保留左表所有，右表没有的填NaN）</span>
+<span class="v">left_merged</span> = pd.<span class="f">merge</span>(<span class="v">df_orders</span>, <span class="v">df_customers</span>, on=<span class="s">"customer_id"</span>, how=<span class="s">"left"</span>)
+
+<span class="c"># 纵向合并（相同结构的表）</span>
+<span class="v">df_all</span> = pd.<span class="f">concat</span>([<span class="v">df_jan</span>, <span class="v">df_feb</span>, <span class="v">df_mar</span>], ignore_index=<span class="k">True</span>)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">5</div><h4>Excel自动化操作（openpyxl）</h4></div>
+    <div class="kp-body">
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="c"># 安装：pip install openpyxl xlsxwriter</span>
+<span class="k">import</span> openpyxl
+<span class="k">from</span> openpyxl.styles <span class="k">import</span> Font, PatternFill, Alignment, Border, Side
+<span class="k">from</span> openpyxl.utils <span class="k">import</span> get_column_letter
+
+<span class="c"># ===== 用Pandas写出格式化Excel =====</span>
+<span class="k">with</span> pd.<span class="f">ExcelWriter</span>(<span class="s">"月度报告.xlsx"</span>, engine=<span class="s">"openpyxl"</span>) <span class="k">as</span> <span class="v">writer</span>:
+    <span class="c"># 写多个Sheet</span>
+    <span class="v">df_detail</span>.<span class="f">to_excel</span>(<span class="v">writer</span>, sheet_name=<span class="s">"明细数据"</span>, index=<span class="k">False</span>)
+    <span class="v">df_summary</span>.<span class="f">to_excel</span>(<span class="v">writer</span>, sheet_name=<span class="s">"汇总"</span>, index=<span class="k">False</span>)
+    
+    <span class="c"># 对每个Sheet进行格式调整</span>
+    <span class="k">for</span> <span class="v">sheet_name</span> <span class="k">in</span> [<span class="s">"明细数据"</span>, <span class="s">"汇总"</span>]:
+        <span class="v">ws</span> = <span class="v">writer</span>.sheets[<span class="v">sheet_name</span>]
+        
+        <span class="c"># 设置表头样式（蓝色背景，白色粗体）</span>
+        <span class="v">header_fill</span> = <span class="f">PatternFill</span>(start_color=<span class="s">"1F4E79"</span>, fill_type=<span class="s">"solid"</span>)
+        <span class="v">header_font</span> = <span class="f">Font</span>(bold=<span class="k">True</span>, color=<span class="s">"FFFFFF"</span>)
+        
+        <span class="k">for</span> <span class="v">cell</span> <span class="k">in</span> <span class="v">ws</span>[<span class="n">1</span>]:   <span class="c"># 第1行（表头）</span>
+            <span class="v">cell</span>.fill = <span class="v">header_fill</span>
+            <span class="v">cell</span>.font = <span class="v">header_font</span>
+            <span class="v">cell</span>.alignment = <span class="f">Alignment</span>(horizontal=<span class="s">"center"</span>)
+        
+        <span class="c"># 自动调整列宽</span>
+        <span class="k">for</span> <span class="v">col</span> <span class="k">in</span> <span class="v">ws</span>.columns:
+            <span class="v">max_len</span> = <span class="f">max</span>(<span class="f">len</span>(<span class="k">str</span>(<span class="v">cell</span>.value <span class="k">or</span> <span class="s">""</span>)) <span class="k">for</span> <span class="v">cell</span> <span class="k">in</span> <span class="v">col</span>)
+            <span class="v">ws</span>.column_dimensions[<span class="f">get_column_letter</span>(<span class="v">col</span>[<span class="n">0</span>].column)].<span class="f">width</span> = <span class="f">min</span>(<span class="v">max_len</span> + <span class="n">2</span>, <span class="n">50</span>)
+
+<span class="f">print</span>(<span class="s">"✅ 格式化Excel报告已生成"</span>)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 4.2 完整ETL项目 ===== -->
+<div class="section">
+  <h2 class="sec-title">🔄 4.2 完整ETL项目示例</h2>
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+    <div class="code-body"><span class="c">"""
+完整ETL示例：读取多个月度销售Excel → 合并清洗 → 按部门汇总 → 写入数据库 → 生成报表
+"""</span>
+<span class="k">import</span> pandas <span class="k">as</span> pd
+<span class="k">import</span> glob
+<span class="k">import</span> logging
+<span class="k">from</span> sqlalchemy <span class="k">import</span> create_engine
+<span class="k">from</span> datetime <span class="k">import</span> datetime
+
+<span class="v">logger</span> = logging.<span class="f">getLogger</span>(<span class="s">"etl"</span>)
+logging.<span class="f">basicConfig</span>(level=logging.INFO, format=<span class="s">'%(asctime)s [%(levelname)s] %(message)s'</span>)
+
+<span class="k">def</span> <span class="f">extract</span>(<span class="v">data_dir</span>: str) -> pd.DataFrame:
+    <span class="s">"""采集：读取目录下所有Excel文件并合并"""</span>
+    <span class="v">all_files</span> = <span class="f">glob</span>.<span class="f">glob</span>(<span class="s">f"{data_dir}/*.xlsx"</span>)
+    <span class="v">logger</span>.<span class="f">info</span>(<span class="s">f"找到 {len(all_files)} 个Excel文件"</span>)
+    
+    <span class="v">dfs</span> = []
+    <span class="k">for</span> <span class="v">file</span> <span class="k">in</span> <span class="v">all_files</span>:
+        <span class="k">try</span>:
+            <span class="v">df</span> = pd.<span class="f">read_excel</span>(<span class="v">file</span>)
+            <span class="v">df</span>[<span class="s">"来源文件"</span>] = <span class="v">file</span>   <span class="c"># 标记数据来源</span>
+            <span class="v">dfs</span>.<span class="f">append</span>(<span class="v">df</span>)
+            <span class="v">logger</span>.<span class="f">info</span>(<span class="s">f"✅ 读取 {file}：{len(df)} 行"</span>)
+        <span class="k">except</span> Exception <span class="k">as</span> <span class="v">e</span>:
+            <span class="v">logger</span>.<span class="f">error</span>(<span class="s">f"❌ 读取失败 {file}：{e}"</span>)
+    
+    <span class="k">if</span> <span class="k">not</span> <span class="v">dfs</span>:
+        <span class="k">raise</span> ValueError(<span class="s">"没有成功读取任何文件"</span>)
+    
+    <span class="v">combined</span> = pd.<span class="f">concat</span>(<span class="v">dfs</span>, ignore_index=<span class="k">True</span>)
+    <span class="v">logger</span>.<span class="f">info</span>(<span class="s">f"合并后共 {len(combined)} 行数据"</span>)
+    <span class="k">return</span> <span class="v">combined</span>
+
+<span class="k">def</span> <span class="f">transform</span>(<span class="v">df</span>: pd.DataFrame) -> pd.DataFrame:
+    <span class="s">"""转换：数据清洗和处理"""</span>
+    <span class="v">logger</span>.<span class="f">info</span>(<span class="s">"开始数据清洗..."</span>)
+    
+    <span class="c"># 1. 标准化列名（去空格、统一命名）</span>
+    <span class="v">df</span>.columns = <span class="v">df</span>.columns.<span class="f">str</span>.<span class="f">strip</span>()
+    
+    <span class="c"># 2. 删除完全空白的行</span>
+    <span class="v">df</span> = <span class="v">df</span>.<span class="f">dropna</span>(how=<span class="s">"all"</span>)
+    
+    <span class="c"># 3. 处理关键字段空值</span>
+    <span class="v">df</span> = <span class="v">df</span>.<span class="f">dropna</span>(subset=[<span class="s">"订单号"</span>])   <span class="c"># 订单号不能为空</span>
+    <span class="v">df</span>[<span class="s">"金额"</span>] = <span class="v">df</span>[<span class="s">"金额"</span>].<span class="f">fillna</span>(<span class="n">0</span>)
+    <span class="v">df</span>[<span class="s">"部门"</span>] = <span class="v">df</span>[<span class="s">"部门"</span>].<span class="f">fillna</span>(<span class="s">"未分类"</span>)
+    
+    <span class="c"># 4. 类型转换</span>
+    <span class="v">df</span>[<span class="s">"金额"</span>] = pd.<span class="f">to_numeric</span>(<span class="v">df</span>[<span class="s">"金额"</span>], errors=<span class="s">"coerce"</span>).<span class="f">fillna</span>(<span class="n">0</span>)
+    <span class="v">df</span>[<span class="s">"日期"</span>] = pd.<span class="f">to_datetime</span>(<span class="v">df</span>[<span class="s">"日期"</span>], errors=<span class="s">"coerce"</span>)
+    
+    <span class="c"># 5. 去重</span>
+    <span class="v">before_count</span> = <span class="k">len</span>(<span class="v">df</span>)
+    <span class="v">df</span> = <span class="v">df</span>.<span class="f">drop_duplicates</span>(subset=[<span class="s">"订单号"</span>])
+    <span class="v">logger</span>.<span class="f">info</span>(<span class="s">f"去重：删除 {before_count - len(df)} 条重复记录"</span>)
+    
+    <span class="c"># 6. 新增计算列</span>
+    <span class="v">df</span>[<span class="s">"含税金额"</span>] = (<span class="v">df</span>[<span class="s">"金额"</span>] * <span class="n">1.13</span>).<span class="f">round</span>(<span class="n">2</span>)
+    <span class="v">df</span>[<span class="s">"年份"</span>] = <span class="v">df</span>[<span class="s">"日期"</span>].<span class="f">dt</span>.year
+    <span class="v">df</span>[<span class="s">"月份"</span>] = <span class="v">df</span>[<span class="s">"日期"</span>].<span class="f">dt</span>.month
+    
+    <span class="v">logger</span>.<span class="f">info</span>(<span class="s">f"清洗完成，剩余 {len(df)} 行有效数据"</span>)
+    <span class="k">return</span> <span class="v">df</span>
+
+<span class="k">def</span> <span class="f">load</span>(<span class="v">df</span>: pd.DataFrame, <span class="v">db_url</span>: str):
+    <span class="s">"""加载：写入数据库并生成Excel报表"""</span>
+    <span class="c"># 写入数据库</span>
+    <span class="v">engine</span> = <span class="f">create_engine</span>(<span class="v">db_url</span>)
+    <span class="v">df</span>.<span class="f">to_sql</span>(<span class="s">"sales_data"</span>, <span class="v">engine</span>, if_exists=<span class="s">"append"</span>, index=<span class="k">False</span>)
+    <span class="v">logger</span>.<span class="f">info</span>(<span class="s">f"✅ 写入数据库：{len(df)} 条"</span>)
+    
+    <span class="c"># 生成汇总报表</span>
+    <span class="v">summary</span> = <span class="v">df</span>.<span class="f">groupby</span>([<span class="s">"部门"</span>, <span class="s">"月份"</span>]).<span class="f">agg</span>({
+        <span class="s">"金额"</span>: <span class="s">"sum"</span>,
+        <span class="s">"订单号"</span>: <span class="s">"count"</span>
+    }).<span class="f">rename</span>(columns={<span class="s">"订单号"</span>: <span class="s">"订单数"</span>}).<span class="f">reset_index</span>()
+    
+    <span class="v">filename</span> = <span class="s">f"汇总报表_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"</span>
+    <span class="v">summary</span>.<span class="f">to_excel</span>(<span class="v">filename</span>, index=<span class="k">False</span>)
+    <span class="v">logger</span>.<span class="f">info</span>(<span class="s">f"✅ 报表已生成：{filename}"</span>)
+    <span class="k">return</span> <span class="v">filename</span>
+
+<span class="c"># 主程序</span>
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    <span class="v">raw</span> = <span class="f">extract</span>(<span class="s">"./data"</span>)
+    <span class="v">clean</span> = <span class="f">transform</span>(<span class="v">raw</span>)
+    <span class="f">load</span>(<span class="v">clean</span>, <span class="s">"mysql+pymysql://user:pass@localhost/salesdb"</span>)</div>
+  </div>
+
+  <div class="exercise">
+    <h4>🏋️ 章节练习</h4>
+    <ol>
+      <li>创建一个包含脏数据的Excel（有重复行、空值、格式不统一的金额），用Pandas完整清洗</li>
+      <li>读取两个Excel（订单表和客户表），用merge关联，生成包含客户名的订单报表</li>
+      <li>从多个月度Excel文件合并，用groupby按月统计各部门销售额，用pivot_table展示</li>
+      <li>生成一个格式美观的Excel报告（有表头颜色、自动列宽、汇总行）</li>
+    </ol>
+  </div>
+</div>
+
+</div>
+<div class="nav-footer">
+  <a href="ch3-agent.html" class="nav-btn">← 上一章：AI Agent</a>
+  <a href="index.html" class="nav-btn">🏠 目录</a>
+  <a href="ch5-engineering.html" class="nav-btn primary">下一章：工程化工具 →</a>
+</div>
+</body>
+</html>

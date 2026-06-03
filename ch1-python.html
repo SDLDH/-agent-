@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>第1章 · Python编程基础</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body>
+<div class="page-header ch1">
+  <a href="index.html" class="back-btn">← 返回目录</a>
+  <div class="ch-num">第 1 章</div>
+  <h1>Python 编程基础</h1>
+  <p>从零开始 · 语法详解 · 大量示例 · 配合练习</p>
+</div>
+<div class="content">
+
+<!-- ===== 1.0 为什么学Python ===== -->
+<div class="section">
+  <h2 class="sec-title">🤔 1.0 为什么Agent工程师必须会Python？</h2>
+
+  <div class="card-grid">
+    <div class="mini-card">
+      <h4>🤖 RPA开发</h4>
+      <p>即使用影刀这样的低代码RPA工具，遇到复杂逻辑也需要写Python脚本。API调用、数据处理都需要Python。</p>
+    </div>
+    <div class="mini-card">
+      <h4>🧠 AI Agent</h4>
+      <p>LangChain、AutoGen等所有主流Agent框架都是Python库。调用大模型API，Python是第一选择。</p>
+    </div>
+    <div class="mini-card">
+      <h4>📊 数据处理</h4>
+      <p>Pandas（数据处理）、openpyxl（Excel操作）、requests（API调用）都是Python库。</p>
+    </div>
+    <div class="mini-card">
+      <h4>⚙️ 工程化</h4>
+      <p>日志、定时任务、异常监控、消息队列，Python有完善的工具链支撑。</p>
+    </div>
+  </div>
+
+  <div class="tip-card blue">
+    <h4>🎯 你需要达到的Python水平</h4>
+    <p>不需要你成为Python专家，也不需要会算法或框架开发。你只需要能：<br>
+    ① 读懂别人写的Python代码 &nbsp;&nbsp; ② 能写100-200行的数据处理脚本 &nbsp;&nbsp; ③ 能调用第三方库完成工作任务</p>
+  </div>
+
+  <h3>🔧 安装Python（5分钟搞定）</h3>
+  <div class="step-list">
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>下载安装包</h4>
+        <p>访问 <strong>python.org/downloads</strong>，点击"Download Python 3.x.x"（最新版）下载安装包</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>安装时勾选"Add Python to PATH"</h4>
+        <p>⚠️ 这一步非常重要！不勾选的话命令行找不到python命令</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>验证安装</h4>
+        <p>打开命令提示符（Win+R 输入 cmd），输入 <code>python --version</code>，看到版本号就成功了</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h4>安装VS Code编辑器（推荐）</h4>
+        <p>下载地址：code.visualstudio.com，安装后再安装"Python"插件，有代码提示更方便</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 1.1 变量 ===== -->
+<div class="section">
+  <h2 class="sec-title">📦 1.1 变量与数据类型（最基础的基础）</h2>
+
+  <div class="concept-box">
+    <div class="concept-icon">💡</div>
+    <div class="concept-body">
+      <h4>什么是变量？</h4>
+      <p>变量就是给数据起一个名字，方便以后使用。就像给快递箱子贴标签——"这箱是张三的"，你就知道里面是什么了。<br>
+      在Python里，<strong>不需要声明类型</strong>，直接写 <code>名字 = 值</code> 就行。</p>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header">
+      <div class="kp-num">1</div>
+      <h4>字符串（str）—— 存文字内容</h4>
+    </div>
+    <div class="kp-body">
+      <p>字符串就是文本，用引号（单引号或双引号都行）括起来。</p>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="c"># 最基础的字符串</span>
+<span class="v">name</span> = <span class="s">"张三"</span>
+<span class="v">company</span> = <span class="s">'半亩花田'</span>        <span class="c"># 单引号和双引号都可以</span>
+<span class="v">email</span> = <span class="s">"zhangsan@example.com"</span>
+
+<span class="c"># 字符串里包含变量（f-string，很常用！）</span>
+<span class="v">message</span> = <span class="s">f"你好，{name}！欢迎来到{company}"</span>
+<span class="f">print</span>(<span class="v">message</span>)
+<span class="c"># 输出：你好，张三！欢迎来到半亩花田</span>
+
+<span class="c"># 多行字符串（用三个引号）</span>
+<span class="v">report</span> = <span class="s">"""
+本月销售汇总：
+- 华东区：100万
+- 华北区：80万
+总计：180万
+"""</span>
+
+<span class="c"># 字符串常用操作</span>
+<span class="v">text</span> = <span class="s">"  Hello World  "</span>
+<span class="f">print</span>(<span class="v">text</span>.<span class="f">strip</span>())      <span class="c"># 去除两端空格：Hello World</span>
+<span class="f">print</span>(<span class="v">text</span>.<span class="f">upper</span>())      <span class="c"># 全大写：  HELLO WORLD  </span>
+<span class="f">print</span>(<span class="v">text</span>.<span class="f">lower</span>())      <span class="c"># 全小写：  hello world  </span>
+<span class="f">print</span>(<span class="v">text</span>.<span class="f">replace</span>(<span class="s">"Hello"</span>, <span class="s">"你好"</span>))  <span class="c"># 替换：  你好 World  </span>
+<span class="f">print</span>(<span class="v">text</span>.<span class="f">split</span>(<span class="s">" "</span>))    <span class="c"># 分割成列表</span>
+<span class="f">print</span>(<span class="k">len</span>(<span class="v">text</span>))          <span class="c"># 长度（含空格）：15</span>
+
+<span class="c"># 判断是否包含</span>
+<span class="f">print</span>(<span class="s">"Hello"</span> <span class="k">in</span> <span class="v">text</span>)   <span class="c"># True</span>
+<span class="f">print</span>(<span class="v">text</span>.<span class="f">startswith</span>(<span class="s">"Hello"</span>))  <span class="c"># False（因为有空格）</span>
+<span class="f">print</span>(<span class="v">text</span>.<span class="f">strip</span>().<span class="f">startswith</span>(<span class="s">"Hello"</span>))  <span class="c"># True</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header">
+      <div class="kp-num">2</div>
+      <h4>数字（int / float）—— 存数值</h4>
+    </div>
+    <div class="kp-body">
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="c"># int：整数</span>
+<span class="v">age</span> = <span class="n">28</span>
+<span class="v">count</span> = <span class="n">100</span>
+<span class="v">year</span> = <span class="n">2024</span>
+
+<span class="c"># float：小数</span>
+<span class="v">salary</span> = <span class="n">20000.0</span>
+<span class="v">tax_rate</span> = <span class="n">0.13</span>
+
+<span class="c"># 数学运算</span>
+<span class="f">print</span>(<span class="n">10</span> + <span class="n">3</span>)   <span class="c"># 加：13</span>
+<span class="f">print</span>(<span class="n">10</span> - <span class="n">3</span>)   <span class="c"># 减：7</span>
+<span class="f">print</span>(<span class="n">10</span> * <span class="n">3</span>)   <span class="c"># 乘：30</span>
+<span class="f">print</span>(<span class="n">10</span> / <span class="n">3</span>)   <span class="c"># 除：3.3333...（结果是float）</span>
+<span class="f">print</span>(<span class="n">10</span> // <span class="n">3</span>)  <span class="c"># 整除：3（取整数部分）</span>
+<span class="f">print</span>(<span class="n">10</span> % <span class="n">3</span>)   <span class="c"># 取余：1</span>
+<span class="f">print</span>(<span class="n">2</span> ** <span class="n">10</span>)  <span class="c"># 幂运算：1024</span>
+
+<span class="c"># 实用场景：计算税后工资</span>
+<span class="v">gross_salary</span> = <span class="n">20000</span>
+<span class="v">tax_amount</span> = <span class="v">gross_salary</span> * <span class="n">0.13</span>
+<span class="v">net_salary</span> = <span class="v">gross_salary</span> - <span class="v">tax_amount</span>
+<span class="f">print</span>(<span class="s">f"税前：{gross_salary}元，税额：{tax_amount:.2f}元，税后：{net_salary:.2f}元"</span>)
+<span class="c"># 输出：税前：20000元，税额：2600.00元，税后：17400.00元</span>
+
+<span class="c"># 类型转换</span>
+<span class="v">s</span> = <span class="s">"100"</span>       <span class="c"># 字符串"100"</span>
+<span class="v">n</span> = <span class="k">int</span>(<span class="v">s</span>)      <span class="c"># 转为整数 100</span>
+<span class="v">f_num</span> = <span class="k">float</span>(<span class="v">s</span>)  <span class="c"># 转为小数 100.0</span>
+<span class="v">back</span> = <span class="k">str</span>(<span class="v">n</span>)   <span class="c"># 整数转回字符串 "100"</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header">
+      <div class="kp-num">3</div>
+      <h4>列表（list）—— 存多个数据，有序</h4>
+    </div>
+    <div class="kp-body">
+      <p>列表就像一个队列，里面可以放任意数量的数据，用方括号 <code>[]</code> 表示。</p>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="c"># 创建列表</span>
+<span class="v">employees</span> = [<span class="s">"张三"</span>, <span class="s">"李四"</span>, <span class="s">"王五"</span>, <span class="s">"赵六"</span>]
+<span class="v">scores</span> = [<span class="n">95</span>, <span class="n">87</span>, <span class="n">92</span>, <span class="n">78</span>]
+<span class="v">mixed</span> = [<span class="s">"张三"</span>, <span class="n">28</span>, <span class="k">True</span>, <span class="n">3.14</span>]  <span class="c"># 可以混合类型</span>
+
+<span class="c"># 访问元素（索引从0开始！）</span>
+<span class="f">print</span>(<span class="v">employees</span>[<span class="n">0</span>])   <span class="c"># 第1个：张三</span>
+<span class="f">print</span>(<span class="v">employees</span>[<span class="n">1</span>])   <span class="c"># 第2个：李四</span>
+<span class="f">print</span>(<span class="v">employees</span>[-<span class="n">1</span>])  <span class="c"># 最后一个：赵六</span>
+<span class="f">print</span>(<span class="v">employees</span>[-<span class="n">2</span>])  <span class="c"># 倒数第二：王五</span>
+
+<span class="c"># 切片（取一段）</span>
+<span class="f">print</span>(<span class="v">employees</span>[<span class="n">1</span>:<span class="n">3</span>])  <span class="c"># 第2到第3个：['李四', '王五']</span>
+<span class="f">print</span>(<span class="v">employees</span>[:<span class="n">2</span>])   <span class="c"># 前2个：['张三', '李四']</span>
+<span class="f">print</span>(<span class="v">employees</span>[<span class="n">2</span>:])   <span class="c"># 从第3个到末尾：['王五', '赵六']</span>
+
+<span class="c"># 常用操作</span>
+<span class="v">employees</span>.<span class="f">append</span>(<span class="s">"钱七"</span>)   <span class="c"># 末尾添加</span>
+<span class="v">employees</span>.<span class="f">insert</span>(<span class="n">0</span>, <span class="s">"总监"</span>) <span class="c"># 在开头插入</span>
+<span class="v">employees</span>.<span class="f">remove</span>(<span class="s">"李四"</span>)   <span class="c"># 删除指定元素</span>
+<span class="v">employees</span>.<span class="f">pop</span>()           <span class="c"># 弹出最后一个</span>
+<span class="f">print</span>(<span class="k">len</span>(<span class="v">employees</span>))     <span class="c"># 列表长度</span>
+<span class="f">print</span>(<span class="s">"张三"</span> <span class="k">in</span> <span class="v">employees</span>) <span class="c"># 判断是否包含：True</span>
+
+<span class="c"># 列表排序</span>
+<span class="v">numbers</span> = [<span class="n">3</span>, <span class="n">1</span>, <span class="n">4</span>, <span class="n">1</span>, <span class="n">5</span>, <span class="n">9</span>]
+<span class="v">numbers</span>.<span class="f">sort</span>()                   <span class="c"># 原地排序：[1, 1, 3, 4, 5, 9]</span>
+<span class="v">numbers</span>.<span class="f">sort</span>(reverse=<span class="k">True</span>)       <span class="c"># 倒序：[9, 5, 4, 3, 1, 1]</span>
+<span class="v">sorted_nums</span> = <span class="f">sorted</span>(<span class="v">numbers</span>)   <span class="c"># 返回新列表，原列表不变</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header">
+      <div class="kp-num">4</div>
+      <h4>字典（dict）—— 存键值对，最常用！</h4>
+    </div>
+    <div class="kp-body">
+      <p>字典就像真实的字典：你给一个"词"（key），它给你"解释"（value）。在数据处理中极其常用，API返回的JSON数据本质上就是字典。</p>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="c"># 创建字典</span>
+<span class="v">user</span> = {
+    <span class="s">"name"</span>: <span class="s">"张三"</span>,
+    <span class="s">"age"</span>: <span class="n">28</span>,
+    <span class="s">"department"</span>: <span class="s">"财务部"</span>,
+    <span class="s">"salary"</span>: <span class="n">15000</span>,
+    <span class="s">"active"</span>: <span class="k">True</span>
+}
+
+<span class="c"># 访问值</span>
+<span class="f">print</span>(<span class="v">user</span>[<span class="s">"name"</span>])                <span class="c"># 张三</span>
+<span class="f">print</span>(<span class="v">user</span>.<span class="f">get</span>(<span class="s">"age"</span>))             <span class="c"># 28（推荐用get，不存在返回None不报错）</span>
+<span class="f">print</span>(<span class="v">user</span>.<span class="f">get</span>(<span class="s">"phone"</span>, <span class="s">"未填写"</span>))  <span class="c"># 未填写（设置默认值）</span>
+
+<span class="c"># 修改和新增</span>
+<span class="v">user</span>[<span class="s">"salary"</span>] = <span class="n">18000</span>  <span class="c"># 修改已有字段</span>
+<span class="v">user</span>[<span class="s">"email"</span>] = <span class="s">"zs@company.com"</span>  <span class="c"># 新增字段</span>
+
+<span class="c"># 遍历字典</span>
+<span class="k">for</span> <span class="v">key</span>, <span class="v">value</span> <span class="k">in</span> <span class="v">user</span>.<span class="f">items</span>():
+    <span class="f">print</span>(<span class="s">f"  {key}: {value}"</span>)
+
+<span class="c"># 只遍历键或值</span>
+<span class="k">for</span> <span class="v">key</span> <span class="k">in</span> <span class="v">user</span>.<span class="f">keys</span>():    <span class="c"># 遍历所有键</span>
+    <span class="f">print</span>(<span class="v">key</span>)
+<span class="k">for</span> <span class="v">val</span> <span class="k">in</span> <span class="v">user</span>.<span class="f">values</span>():  <span class="c"># 遍历所有值</span>
+    <span class="f">print</span>(<span class="v">val</span>)
+
+<span class="c"># 实战：API返回的JSON数据就是字典</span>
+<span class="v">api_response</span> = {
+    <span class="s">"code"</span>: <span class="n">200</span>,
+    <span class="s">"message"</span>: <span class="s">"success"</span>,
+    <span class="s">"data"</span>: {
+        <span class="s">"total"</span>: <span class="n">100</span>,
+        <span class="s">"orders"</span>: [
+            {<span class="s">"id"</span>: <span class="n">1</span>, <span class="s">"amount"</span>: <span class="n">500</span>},
+            {<span class="s">"id"</span>: <span class="n">2</span>, <span class="s">"amount"</span>: <span class="n">300</span>}
+        ]
+    }
+}
+<span class="c"># 提取嵌套数据</span>
+<span class="v">orders</span> = <span class="v">api_response</span>[<span class="s">"data"</span>][<span class="s">"orders"</span>]
+<span class="k">for</span> <span class="v">order</span> <span class="k">in</span> <span class="v">orders</span>:
+    <span class="f">print</span>(<span class="s">f"订单{order['id']}: {order['amount']}元"</span>)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 1.2 条件判断 ===== -->
+<div class="section">
+  <h2 class="sec-title">🔀 1.2 条件判断（if / elif / else）</h2>
+
+  <div class="concept-box">
+    <div class="concept-icon">🚦</div>
+    <div class="concept-body">
+      <h4>条件判断就是"选择不同的路"</h4>
+      <p>就像红绿灯：绿灯走，红灯停，黄灯等。程序根据条件决定执行哪段代码。</p>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header">
+      <div class="kp-num">1</div>
+      <h4>基本语法</h4>
+    </div>
+    <div class="kp-body">
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="c"># ===== 基本结构 =====</span>
+<span class="v">score</span> = <span class="n">85</span>
+
+<span class="k">if</span> <span class="v">score</span> >= <span class="n">90</span>:
+    <span class="f">print</span>(<span class="s">"优秀"</span>)
+<span class="k">elif</span> <span class="v">score</span> >= <span class="n">80</span>:
+    <span class="f">print</span>(<span class="s">"良好"</span>)   <span class="c"># ← 这行会执行</span>
+<span class="k">elif</span> <span class="v">score</span> >= <span class="n">60</span>:
+    <span class="f">print</span>(<span class="s">"及格"</span>)
+<span class="k">else</span>:
+    <span class="f">print</span>(<span class="s">"不及格"</span>)
+
+<span class="c"># ===== 比较运算符 =====</span>
+<span class="c"># ==  等于（注意：是两个等号！一个等号是赋值）</span>
+<span class="c"># !=  不等于</span>
+<span class="c"># >   大于</span>
+<span class="c"># <   小于</span>
+<span class="c"># >=  大于等于</span>
+<span class="c"># <=  小于等于</span>
+
+<span class="c"># ===== 逻辑运算符 =====</span>
+<span class="v">age</span> = <span class="n">28</span>
+<span class="v">salary</span> = <span class="n">15000</span>
+
+<span class="c"># and：两个条件都要满足</span>
+<span class="k">if</span> <span class="v">age</span> >= <span class="n">25</span> <span class="k">and</span> <span class="v">salary</span> >= <span class="n">10000</span>:
+    <span class="f">print</span>(<span class="s">"符合条件"</span>)
+
+<span class="c"># or：任一条件满足即可</span>
+<span class="k">if</span> <span class="v">age</span> < <span class="n">18</span> <span class="k">or</span> <span class="v">age</span> > <span class="n">60</span>:
+    <span class="f">print</span>(<span class="s">"不在工作年龄"</span>)
+
+<span class="c"># not：取反</span>
+<span class="v">is_active</span> = <span class="k">False</span>
+<span class="k">if</span> <span class="k">not</span> <span class="v">is_active</span>:
+    <span class="f">print</span>(<span class="s">"账号未激活"</span>)
+
+<span class="c"># ===== 实战场景：处理订单状态 =====</span>
+<span class="k">def</span> <span class="f">handle_order</span>(<span class="v">order</span>):
+    <span class="v">status</span> = <span class="v">order</span>.<span class="f">get</span>(<span class="s">"status"</span>)
+    <span class="v">amount</span> = <span class="v">order</span>.<span class="f">get</span>(<span class="s">"amount"</span>, <span class="n">0</span>)
+    
+    <span class="k">if</span> <span class="v">status</span> == <span class="s">"pending"</span>:
+        <span class="k">if</span> <span class="v">amount</span> > <span class="n">10000</span>:
+            <span class="f">print</span>(<span class="s">f"大额订单{order['id']}，需要主管审批"</span>)
+        <span class="k">else</span>:
+            <span class="f">print</span>(<span class="s">f"订单{order['id']}自动审批通过"</span>)
+    <span class="k">elif</span> <span class="v">status</span> == <span class="s">"approved"</span>:
+        <span class="f">print</span>(<span class="s">f"订单{order['id']}开始执行"</span>)
+    <span class="k">elif</span> <span class="v">status</span> <span class="k">in</span> [<span class="s">"cancelled"</span>, <span class="s">"rejected"</span>]:
+        <span class="f">print</span>(<span class="s">f"订单{order['id']}已取消/拒绝，归档处理"</span>)
+    <span class="k">else</span>:
+        <span class="f">print</span>(<span class="s">f"订单{order['id']}状态未知：{status}"</span>)</div>
+      </div>
+      <div class="danger-box">单个等号 = 是赋值，双等号 == 才是比较！初学者最常犯的错误。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 1.3 循环 ===== -->
+<div class="section">
+  <h2 class="sec-title">🔄 1.3 循环（for / while）</h2>
+
+  <div class="knowledge-point">
+    <div class="kp-header">
+      <div class="kp-num">1</div>
+      <h4>for 循环 —— 遍历已知集合</h4>
+    </div>
+    <div class="kp-body">
+      <p>for循环用于遍历一个序列（列表、字符串、字典等），每次取出一个元素处理。</p>
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="c"># ===== 基本for循环 =====</span>
+<span class="v">fruits</span> = [<span class="s">"苹果"</span>, <span class="s">"香蕉"</span>, <span class="s">"橙子"</span>]
+<span class="k">for</span> <span class="v">fruit</span> <span class="k">in</span> <span class="v">fruits</span>:
+    <span class="f">print</span>(<span class="s">f"我喜欢吃{fruit}"</span>)
+
+<span class="c"># ===== range() 生成数字序列 =====</span>
+<span class="k">for</span> <span class="v">i</span> <span class="k">in</span> <span class="f">range</span>(<span class="n">5</span>):         <span class="c"># 0,1,2,3,4</span>
+    <span class="f">print</span>(<span class="s">f"第{i+1}次循环"</span>)
+
+<span class="k">for</span> <span class="v">i</span> <span class="k">in</span> <span class="f">range</span>(<span class="n">1</span>, <span class="n">11</span>):      <span class="c"># 1到10</span>
+    <span class="f">print</span>(<span class="v">i</span>)
+
+<span class="k">for</span> <span class="v">i</span> <span class="k">in</span> <span class="f">range</span>(<span class="n">0</span>, <span class="n">100</span>, <span class="n">10</span>):  <span class="c"># 0,10,20...90（步长10）</span>
+    <span class="f">print</span>(<span class="v">i</span>)
+
+<span class="c"># ===== enumerate：同时获取索引和值 =====</span>
+<span class="v">employees</span> = [<span class="s">"张三"</span>, <span class="s">"李四"</span>, <span class="s">"王五"</span>]
+<span class="k">for</span> <span class="v">idx</span>, <span class="v">name</span> <span class="k">in</span> <span class="f">enumerate</span>(<span class="v">employees</span>, start=<span class="n">1</span>):
+    <span class="f">print</span>(<span class="s">f"第{idx}号员工：{name}"</span>)
+
+<span class="c"># ===== 嵌套循环 =====</span>
+<span class="v">departments</span> = [<span class="s">"财务部"</span>, <span class="s">"运营部"</span>]
+<span class="v">months</span> = [<span class="s">"1月"</span>, <span class="s">"2月"</span>, <span class="s">"3月"</span>]
+<span class="k">for</span> <span class="v">dept</span> <span class="k">in</span> <span class="v">departments</span>:
+    <span class="k">for</span> <span class="v">month</span> <span class="k">in</span> <span class="v">months</span>:
+        <span class="f">print</span>(<span class="s">f"生成{dept}{month}报表"</span>)
+
+<span class="c"># ===== break 和 continue =====</span>
+<span class="v">numbers</span> = [<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>, <span class="n">-1</span>, <span class="n">5</span>, <span class="n">6</span>]
+<span class="k">for</span> <span class="v">num</span> <span class="k">in</span> <span class="v">numbers</span>:
+    <span class="k">if</span> <span class="v">num</span> < <span class="n">0</span>:
+        <span class="f">print</span>(<span class="s">f"遇到负数{num}，停止处理"</span>)
+        <span class="k">break</span>       <span class="c"># 退出整个循环</span>
+    <span class="f">print</span>(<span class="v">num</span>)
+
+<span class="k">for</span> <span class="v">num</span> <span class="k">in</span> <span class="v">numbers</span>:
+    <span class="k">if</span> <span class="v">num</span> < <span class="n">0</span>:
+        <span class="k">continue</span>    <span class="c"># 跳过本次，继续下一个</span>
+    <span class="f">print</span>(<span class="v">num</span>)      <span class="c"># 只打印正数</span>
+
+<span class="c"># ===== 实战：批量处理数据 =====</span>
+<span class="v">raw_data</span> = [
+    {<span class="s">"name"</span>: <span class="s">"张三"</span>, <span class="s">"amount"</span>: <span class="s">"1000"</span>},   <span class="c"># 注意amount是字符串</span>
+    {<span class="s">"name"</span>: <span class="s">"李四"</span>, <span class="s">"amount"</span>: <span class="s">""</span>},       <span class="c"># 空值</span>
+    {<span class="s">"name"</span>: <span class="s">"王五"</span>, <span class="s">"amount"</span>: <span class="s">"2500"</span>},
+]
+
+<span class="v">total</span> = <span class="n">0</span>
+<span class="v">error_count</span> = <span class="n">0</span>
+<span class="k">for</span> <span class="v">row</span> <span class="k">in</span> <span class="v">raw_data</span>:
+    <span class="k">if</span> <span class="k">not</span> <span class="v">row</span>[<span class="s">"amount"</span>]:     <span class="c"># 空值跳过</span>
+        <span class="v">error_count</span> += <span class="n">1</span>
+        <span class="k">continue</span>
+    <span class="v">total</span> += <span class="k">int</span>(<span class="v">row</span>[<span class="s">"amount"</span>])
+<span class="f">print</span>(<span class="s">f"合计：{total}元，{error_count}条数据缺失"</span>)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header">
+      <div class="kp-num">2</div>
+      <h4>while 循环 —— 条件满足就一直执行</h4>
+    </div>
+    <div class="kp-body">
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="c"># 基本while循环</span>
+<span class="v">count</span> = <span class="n">0</span>
+<span class="k">while</span> <span class="v">count</span> < <span class="n">5</span>:
+    <span class="f">print</span>(<span class="s">f"第{count+1}次"</span>)
+    <span class="v">count</span> += <span class="n">1</span>
+
+<span class="c"># ===== 实战：带重试的API请求 =====</span>
+<span class="v">max_retries</span> = <span class="n">3</span>
+<span class="v">attempt</span> = <span class="n">0</span>
+<span class="v">success</span> = <span class="k">False</span>
+
+<span class="k">while</span> <span class="v">attempt</span> < <span class="v">max_retries</span> <span class="k">and</span> <span class="k">not</span> <span class="v">success</span>:
+    <span class="v">attempt</span> += <span class="n">1</span>
+    <span class="f">print</span>(<span class="s">f"第{attempt}次尝试..."</span>)
+    <span class="k">try</span>:
+        <span class="c"># response = requests.get(url, timeout=5)</span>
+        <span class="v">success</span> = <span class="k">True</span>
+        <span class="f">print</span>(<span class="s">"✅ 请求成功"</span>)
+    <span class="k">except</span> Exception <span class="k">as</span> <span class="v">e</span>:
+        <span class="f">print</span>(<span class="s">f"❌ 第{attempt}次失败：{e}"</span>)
+        <span class="k">if</span> <span class="v">attempt</span> < <span class="v">max_retries</span>:
+            <span class="f">print</span>(<span class="s">"等待2秒后重试..."</span>)
+            <span class="c"># time.sleep(2)</span>
+
+<span class="k">if</span> <span class="k">not</span> <span class="v">success</span>:
+    <span class="f">print</span>(<span class="s">"❌ 所有重试均失败，请人工处理"</span>)</div>
+      </div>
+      <div class="warning-box">while循环一定要确保退出条件，否则会造成死循环！程序会一直跑停不下来。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 1.4 函数 ===== -->
+<div class="section">
+  <h2 class="sec-title">📦 1.4 函数（def）</h2>
+
+  <div class="concept-box">
+    <div class="concept-icon">🔧</div>
+    <div class="concept-body">
+      <h4>函数是什么？</h4>
+      <p>函数就是把一段有特定功能的代码打包起来，起个名字，需要的时候就"调用"它。<br>
+      好处：代码可以复用，修改一处就全部生效，而不用到处找同样的代码改。</p>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header">
+      <div class="kp-num">1</div>
+      <h4>函数定义与调用</h4>
+    </div>
+    <div class="kp-body">
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="c"># 最简单的函数（无参数，无返回值）</span>
+<span class="k">def</span> <span class="f">say_hello</span>():
+    <span class="f">print</span>(<span class="s">"你好！"</span>)
+
+<span class="f">say_hello</span>()   <span class="c"># 调用函数：你好！</span>
+
+<span class="c"># 带参数的函数</span>
+<span class="k">def</span> <span class="f">greet</span>(<span class="v">name</span>, <span class="v">company</span>):
+    <span class="f">print</span>(<span class="s">f"你好，{name}！欢迎加入{company}！"</span>)
+
+<span class="f">greet</span>(<span class="s">"张三"</span>, <span class="s">"半亩花田"</span>)  <span class="c"># 位置参数</span>
+<span class="f">greet</span>(<span class="v">company</span>=<span class="s">"半亩花田"</span>, <span class="v">name</span>=<span class="s">"张三"</span>)  <span class="c"># 关键字参数（顺序可以乱）</span>
+
+<span class="c"># 有返回值的函数（return）</span>
+<span class="k">def</span> <span class="f">calculate_tax</span>(<span class="v">salary</span>, <span class="v">rate</span>=<span class="n">0.13</span>):  <span class="c"># rate有默认值</span>
+    <span class="v">tax</span> = <span class="v">salary</span> * <span class="v">rate</span>
+    <span class="v">net</span> = <span class="v">salary</span> - <span class="v">tax</span>
+    <span class="k">return</span> <span class="v">net</span>, <span class="v">tax</span>     <span class="c"># 可以返回多个值（实际是一个元组）</span>
+
+<span class="v">net_pay</span>, <span class="v">tax_amount</span> = <span class="f">calculate_tax</span>(<span class="n">20000</span>)
+<span class="f">print</span>(<span class="s">f"税后：{net_pay}，税额：{tax_amount}"</span>)
+
+<span class="v">net_pay2</span>, _ = <span class="f">calculate_tax</span>(<span class="n">15000</span>, <span class="n">0.1</span>)  <span class="c"># 用_忽略不需要的返回值</span>
+
+<span class="c"># 函数文档字符串（好习惯！）</span>
+<span class="k">def</span> <span class="f">clean_amount</span>(<span class="v">value</span>):
+    <span class="s">"""
+    清洗金额数据：去除空格、逗号，转为浮点数
+    
+    参数:
+        value: 原始金额字符串，如 "1,234.56" 或 " 1000 "
+    
+    返回:
+        float: 清洗后的金额数值，出错返回 0.0
+    """</span>
+    <span class="k">try</span>:
+        <span class="k">return</span> <span class="k">float</span>(<span class="k">str</span>(<span class="v">value</span>).<span class="f">replace</span>(<span class="s">","</span>, <span class="s">""</span>).<span class="f">strip</span>())
+    <span class="k">except</span>:
+        <span class="k">return</span> <span class="n">0.0</span>
+
+<span class="c"># 测试</span>
+<span class="f">print</span>(<span class="f">clean_amount</span>(<span class="s">"1,234.56"</span>))  <span class="c"># 1234.56</span>
+<span class="f">print</span>(<span class="f">clean_amount</span>(<span class="s">"  500  "</span>))   <span class="c"># 500.0</span>
+<span class="f">print</span>(<span class="f">clean_amount</span>(<span class="s">"abc"</span>))       <span class="c"># 0.0</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 1.5 异常处理 ===== -->
+<div class="section">
+  <h2 class="sec-title">⚠️ 1.5 异常处理（try/except）</h2>
+
+  <div class="tip-card red">
+    <h4>🚨 为什么异常处理对自动化脚本极其重要？</h4>
+    <p>自动化脚本24小时无人值守地跑。网络断了、网页改版了、数据格式变了……任何意外都会让程序崩溃。<br>
+    <strong>没有异常处理 = 程序崩了什么都不知道；有异常处理 = 出问题了自动记日志、发告警、继续处理其他数据。</strong></p>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header">
+      <div class="kp-num">1</div>
+      <h4>完整的异常处理语法</h4>
+    </div>
+    <div class="kp-body">
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="c"># ===== 完整结构 =====</span>
+<span class="k">try</span>:
+    <span class="c"># 可能出错的代码放这里</span>
+    <span class="v">result</span> = <span class="n">10</span> / <span class="n">0</span>       <span class="c"># 这会引发 ZeroDivisionError</span>
+
+<span class="k">except</span> ZeroDivisionError <span class="k">as</span> <span class="v">e</span>:
+    <span class="f">print</span>(<span class="s">f"除零错误：{e}"</span>)   <span class="c"># 捕获特定异常</span>
+
+<span class="k">except</span> ValueError <span class="k">as</span> <span class="v">e</span>:
+    <span class="f">print</span>(<span class="s">f"值错误：{e}"</span>)     <span class="c"># 捕获另一种异常</span>
+
+<span class="k">except</span> Exception <span class="k">as</span> <span class="v">e</span>:
+    <span class="f">print</span>(<span class="s">f"未知错误：{e}"</span>)   <span class="c"># 捕获所有异常（兜底）</span>
+
+<span class="k">else</span>:
+    <span class="f">print</span>(<span class="s">"没有发生任何异常，执行这里"</span>)  <span class="c"># 可选</span>
+
+<span class="k">finally</span>:
+    <span class="f">print</span>(<span class="s">"无论如何都会执行这里"</span>)        <span class="c"># 通常用于关闭连接、释放资源</span>
+
+<span class="c"># ===== 常见异常类型 =====</span>
+<span class="c"># FileNotFoundError   文件不存在</span>
+<span class="c"># KeyError            字典键不存在</span>
+<span class="c"># IndexError          列表索引越界</span>
+<span class="c"># ValueError          值类型不对（如int("abc")）</span>
+<span class="c"># ConnectionError     网络连接失败</span>
+<span class="c"># TimeoutError        超时</span>
+<span class="c"># ZeroDivisionError   除以零</span>
+
+<span class="c"># ===== 实战：健壮的数据处理函数 =====</span>
+<span class="k">import</span> logging
+<span class="v">logger</span> = logging.<span class="f">getLogger</span>(<span class="s">"data_processor"</span>)
+
+<span class="k">def</span> <span class="f">safe_process_row</span>(<span class="v">row</span>):
+    <span class="s">"""安全地处理一行数据，出错不崩溃"""</span>
+    <span class="k">try</span>:
+        <span class="c"># 各种可能出错的操作</span>
+        <span class="v">name</span> = <span class="v">row</span>[<span class="s">"name"</span>].<span class="f">strip</span>()       <span class="c"># 可能KeyError</span>
+        <span class="v">amount</span> = <span class="k">float</span>(<span class="v">row</span>[<span class="s">"amount"</span>])   <span class="c"># 可能ValueError</span>
+        <span class="v">result</span> = <span class="v">amount</span> * <span class="n">1.13</span>          <span class="c"># 计算含税金额
+        
+        </span><span class="k">return</span> {<span class="s">"name"</span>: <span class="v">name</span>, <span class="s">"amount_with_tax"</span>: <span class="v">result</span>, <span class="s">"status"</span>: <span class="s">"ok"</span>}
+    
+    <span class="k">except</span> KeyError <span class="k">as</span> <span class="v">e</span>:
+        <span class="v">logger</span>.<span class="f">warning</span>(<span class="s">f"字段缺失：{e}，数据：{row}"</span>)
+        <span class="k">return</span> {<span class="s">"status"</span>: <span class="s">"error"</span>, <span class="s">"reason"</span>: <span class="s">f"字段缺失:{e}"</span>}
+    
+    <span class="k">except</span> ValueError <span class="k">as</span> <span class="v">e</span>:
+        <span class="v">logger</span>.<span class="f">warning</span>(<span class="s">f"数据格式错误：{e}，数据：{row}"</span>)
+        <span class="k">return</span> {<span class="s">"status"</span>: <span class="s">"error"</span>, <span class="s">"reason"</span>: <span class="s">f"格式错误:{e}"</span>}
+
+<span class="c"># 批量处理，出错的跳过，继续处理后面的</span>
+<span class="v">data_list</span> = [
+    {<span class="s">"name"</span>: <span class="s">"张三"</span>, <span class="s">"amount"</span>: <span class="s">"1000"</span>},
+    {<span class="s">"name"</span>: <span class="s">"李四"</span>, <span class="s">"amount"</span>: <span class="s">"abc"</span>},  <span class="c"># 这个会出错</span>
+    {<span class="s">"name"</span>: <span class="s">"王五"</span>, <span class="s">"amount"</span>: <span class="s">"2000"</span>},
+]
+
+<span class="v">results</span> = [<span class="f">safe_process_row</span>(<span class="v">row</span>) <span class="k">for</span> <span class="v">row</span> <span class="k">in</span> <span class="v">data_list</span>]
+<span class="v">success_count</span> = <span class="f">sum</span>(<span class="n">1</span> <span class="k">for</span> <span class="v">r</span> <span class="k">in</span> <span class="v">results</span> <span class="k">if</span> <span class="v">r</span>[<span class="s">"status"</span>] == <span class="s">"ok"</span>)
+<span class="f">print</span>(<span class="s">f"成功：{success_count}条，失败：{len(results)-success_count}条"</span>)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 1.6 文件操作 ===== -->
+<div class="section">
+  <h2 class="sec-title">📁 1.6 文件读写操作</h2>
+
+  <div class="knowledge-point">
+    <div class="kp-header">
+      <div class="kp-num">1</div>
+      <h4>读写文本文件</h4>
+    </div>
+    <div class="kp-body">
+      <div class="code-wrap">
+        <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+        <div class="code-body"><span class="c"># ===== 读取文件 =====</span>
+<span class="c"># 方式1：读取全部内容</span>
+<span class="k">with</span> <span class="f">open</span>(<span class="s">"data.txt"</span>, <span class="s">"r"</span>, encoding=<span class="s">"utf-8"</span>) <span class="k">as</span> <span class="v">f</span>:
+    <span class="v">content</span> = <span class="v">f</span>.<span class="f">read</span>()       <span class="c"># 全部读入一个字符串</span>
+    <span class="f">print</span>(<span class="v">content</span>)
+
+<span class="c"># 方式2：逐行读取（处理大文件时节省内存）</span>
+<span class="k">with</span> <span class="f">open</span>(<span class="s">"data.txt"</span>, <span class="s">"r"</span>, encoding=<span class="s">"utf-8"</span>) <span class="k">as</span> <span class="v">f</span>:
+    <span class="k">for</span> <span class="v">line</span> <span class="k">in</span> <span class="v">f</span>:
+        <span class="f">print</span>(<span class="v">line</span>.<span class="f">strip</span>())   <span class="c"># strip()去掉末尾的\n</span>
+
+<span class="c"># 方式3：读取所有行到列表</span>
+<span class="k">with</span> <span class="f">open</span>(<span class="s">"data.txt"</span>, <span class="s">"r"</span>, encoding=<span class="s">"utf-8"</span>) <span class="k">as</span> <span class="v">f</span>:
+    <span class="v">lines</span> = <span class="v">f</span>.<span class="f">readlines</span>()   <span class="c"># 每行是列表的一个元素</span>
+
+<span class="c"># ===== 写入文件 =====</span>
+<span class="c"># "w" 模式：覆盖写（文件存在则清空重写）</span>
+<span class="k">with</span> <span class="f">open</span>(<span class="s">"result.txt"</span>, <span class="s">"w"</span>, encoding=<span class="s">"utf-8"</span>) <span class="k">as</span> <span class="v">f</span>:
+    <span class="v">f</span>.<span class="f">write</span>(<span class="s">"第一行\n"</span>)
+    <span class="v">f</span>.<span class="f">write</span>(<span class="s">"第二行\n"</span>)
+
+<span class="c"># "a" 模式：追加写（不覆盖，在末尾添加）</span>
+<span class="k">with</span> <span class="f">open</span>(<span class="s">"log.txt"</span>, <span class="s">"a"</span>, encoding=<span class="s">"utf-8"</span>) <span class="k">as</span> <span class="v">f</span>:
+    <span class="v">f</span>.<span class="f">write</span>(<span class="s">f"2024-01-01 处理了100条记录\n"</span>)
+
+<span class="c"># ===== 读取CSV文件 =====</span>
+<span class="k">import</span> csv
+
+<span class="k">with</span> <span class="f">open</span>(<span class="s">"employees.csv"</span>, <span class="s">"r"</span>, encoding=<span class="s">"utf-8"</span>) <span class="k">as</span> <span class="v">f</span>:
+    <span class="v">reader</span> = csv.<span class="f">DictReader</span>(<span class="v">f</span>)   <span class="c"># 第一行作为列名</span>
+    <span class="k">for</span> <span class="v">row</span> <span class="k">in</span> <span class="v">reader</span>:
+        <span class="f">print</span>(<span class="v">row</span>[<span class="s">"姓名"</span>], <span class="v">row</span>[<span class="s">"部门"</span>], <span class="v">row</span>[<span class="s">"工资"</span>])
+
+<span class="c"># ===== 操作JSON文件 =====</span>
+<span class="k">import</span> json
+
+<span class="c"># 读取JSON</span>
+<span class="k">with</span> <span class="f">open</span>(<span class="s">"config.json"</span>, <span class="s">"r"</span>, encoding=<span class="s">"utf-8"</span>) <span class="k">as</span> <span class="v">f</span>:
+    <span class="v">config</span> = json.<span class="f">load</span>(<span class="v">f</span>)   <span class="c"># 自动转为Python字典</span>
+
+<span class="c"># 写入JSON</span>
+<span class="v">data</span> = {<span class="s">"name"</span>: <span class="s">"张三"</span>, <span class="s">"scores"</span>: [<span class="n">90</span>, <span class="n">85</span>, <span class="n">92</span>]}
+<span class="k">with</span> <span class="f">open</span>(<span class="s">"output.json"</span>, <span class="s">"w"</span>, encoding=<span class="s">"utf-8"</span>) <span class="k">as</span> <span class="v">f</span>:
+    json.<span class="f">dump</span>(<span class="v">data</span>, <span class="v">f</span>, ensure_ascii=<span class="k">False</span>, indent=<span class="n">2</span>)
+    <span class="c"># ensure_ascii=False 确保中文不乱码</span>
+    <span class="c"># indent=2 格式化缩进，可读性好</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 1.7 常用库 ===== -->
+<div class="section">
+  <h2 class="sec-title">📚 1.7 必装的Python库</h2>
+
+  <div class="tip-card blue">
+    <h4>安装库的命令（在命令提示符中输入）</h4>
+    <p><code>pip install 库名</code> &nbsp;&nbsp; 例如：<code>pip install requests pandas openpyxl</code><br>
+    一次安装多个：<code>pip install requests pandas openpyxl selenium beautifulsoup4</code></p>
+  </div>
+
+  <table class="simple-table">
+    <tr>
+      <th>库名</th><th>用途</th><th>常用场景</th>
+    </tr>
+    <tr><td><strong>requests</strong></td><td>HTTP请求/API调用</td><td>调用第三方API、下载文件</td></tr>
+    <tr><td><strong>pandas</strong></td><td>数据处理分析</td><td>处理Excel/CSV，数据清洗</td></tr>
+    <tr><td><strong>openpyxl</strong></td><td>操作Excel文件</td><td>读写.xlsx文件</td></tr>
+    <tr><td><strong>selenium</strong></td><td>网页自动化</td><td>模拟浏览器操作</td></tr>
+    <tr><td><strong>playwright</strong></td><td>现代网页自动化</td><td>比Selenium更快更稳定</td></tr>
+    <tr><td><strong>beautifulsoup4</strong></td><td>HTML解析</td><td>爬虫、网页内容提取</td></tr>
+    <tr><td><strong>pymysql</strong></td><td>MySQL数据库连接</td><td>操作MySQL/MariaDB</td></tr>
+    <tr><td><strong>cx_Oracle</strong></td><td>Oracle数据库连接</td><td>你已有Oracle经验！</td></tr>
+    <tr><td><strong>sqlalchemy</strong></td><td>数据库ORM</td><td>统一的数据库操作接口</td></tr>
+    <tr><td><strong>schedule</strong></td><td>定时任务</td><td>设置每天/每小时执行</td></tr>
+    <tr><td><strong>python-dotenv</strong></td><td>环境变量管理</td><td>存储密码等敏感信息</td></tr>
+    <tr><td><strong>loguru</strong></td><td>更好用的日志库</td><td>替代标准logging，更简洁</td></tr>
+    <tr><td><strong>openai</strong></td><td>OpenAI API</td><td>调用GPT系列模型</td></tr>
+    <tr><td><strong>langchain</strong></td><td>AI Agent框架</td><td>构建AI应用</td></tr>
+  </table>
+
+  <div class="exercise">
+    <h4>🏋️ 章节练习题</h4>
+    <ol>
+      <li>写一个函数，接收一个员工列表（每人是字典，有name/salary/dept字段），打印所有财务部员工的姓名和工资</li>
+      <li>改造上题，用异常处理保护代码：如果某个员工数据缺少salary字段，打印警告并跳过</li>
+      <li>写一个程序，读取一个CSV文件（格式：姓名,部门,工资），计算每个部门的平均工资，写入新文件</li>
+      <li>用while循环模拟：从列表中依次取任务处理，处理完一个删一个，直到列表为空</li>
+    </ol>
+  </div>
+</div>
+
+</div>
+<div class="nav-footer">
+  <a href="ch0-jd-analysis.html" class="nav-btn">← 上一章：岗位解读</a>
+  <a href="index.html" class="nav-btn">🏠 目录</a>
+  <a href="ch2-rpa.html" class="nav-btn primary">下一章：RPA自动化 →</a>
+</div>
+</body>
+</html>

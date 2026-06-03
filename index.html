@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Agent开发工程师完整学习手册</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Microsoft YaHei', sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+  min-height: 100vh;
+  color: white;
+}
+.hero {
+  text-align: center;
+  padding: 60px 30px 40px;
+}
+.hero .badge {
+  display: inline-block;
+  background: rgba(99,102,241,0.3);
+  border: 1px solid rgba(99,102,241,0.5);
+  padding: 6px 20px;
+  border-radius: 30px;
+  font-size: 13px;
+  color: #a5b4fc;
+  margin-bottom: 20px;
+}
+.hero h1 {
+  font-size: 42px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa, #34d399);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 15px;
+  line-height: 1.2;
+}
+.hero p {
+  font-size: 16px;
+  color: #94a3b8;
+  max-width: 600px;
+  margin: 0 auto 30px;
+}
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 50px;
+  flex-wrap: wrap;
+}
+.stat { text-align: center; }
+.stat .num { font-size: 32px; font-weight: 900; color: #60a5fa; }
+.stat .label { font-size: 12px; color: #64748b; margin-top: 4px; }
+
+.chapters {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px 60px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+.chapter-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 24px;
+  text-decoration: none;
+  color: white;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.chapter-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--color);
+}
+.chapter-card:hover {
+  background: rgba(255,255,255,0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+.card-num {
+  font-size: 12px;
+  color: var(--color);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.card-icon { font-size: 36px; margin-bottom: 12px; }
+.card-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.card-desc { font-size: 13px; color: #94a3b8; line-height: 1.6; margin-bottom: 12px; }
+.card-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.card-tag {
+  background: rgba(255,255,255,0.1);
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  color: #cbd5e1;
+}
+.card-time {
+  position: absolute;
+  top: 16px; right: 16px;
+  font-size: 11px;
+  color: #475569;
+  background: rgba(0,0,0,0.3);
+  padding: 3px 10px;
+  border-radius: 10px;
+}
+
+.section-title {
+  max-width: 1000px;
+  margin: 0 auto 20px;
+  padding: 0 20px;
+  font-size: 13px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+.tip-box {
+  max-width: 1000px;
+  margin: 0 auto 40px;
+  padding: 0 20px;
+}
+.tip-inner {
+  background: rgba(16,185,129,0.1);
+  border: 1px solid rgba(16,185,129,0.3);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  gap: 15px;
+}
+.tip-inner .icon { font-size: 24px; flex-shrink: 0; }
+.tip-inner h4 { font-size: 15px; font-weight: 700; color: #34d399; margin-bottom: 6px; }
+.tip-inner p { font-size: 13px; color: #94a3b8; line-height: 1.7; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="badge">🎯 针对「半亩花田」Agent开发工程师岗位 · 1.5-2.5万·14薪</div>
+  <h1>Agent 开发工程师<br>完整学习手册</h1>
+  <p>零基础 · 在职自学 · 图文超详解 · 每章独立文档</p>
+  <div class="stats">
+    <div class="stat"><div class="num">8</div><div class="label">独立章节</div></div>
+    <div class="stat"><div class="num">50+</div><div class="label">代码示例</div></div>
+    <div class="stat"><div class="num">30+</div><div class="label">图解说明</div></div>
+    <div class="stat"><div class="num">3个月</div><div class="label">系统学习</div></div>
+  </div>
+</div>
+
+<div class="tip-box">
+  <div class="tip-inner">
+    <div class="icon">💡</div>
+    <div>
+      <h4>使用说明：点击每张卡片进入对应章节详细学习</h4>
+      <p>建议按顺序学习。每个章节都有详细的知识点讲解、代码示例、图解和练习。<br>
+      你有 <strong style="color:#34d399">数据库（Oracle/MySQL）经验</strong> 和 <strong style="color:#34d399">ERP实施经验</strong>，这是转型做Agent工程师的巨大优势！重点学 Python + RPA + AI Agent 即可。</p>
+    </div>
+  </div>
+</div>
+
+<div class="section-title">📚 学习章节（建议按顺序）</div>
+
+<div class="chapters">
+
+  <a href="ch0-jd-analysis.html" class="chapter-card" style="--color:#60a5fa">
+    <div class="card-time">必读</div>
+    <div class="card-num">第 0 章</div>
+    <div class="card-icon">🎯</div>
+    <div class="card-title">岗位深度解读</div>
+    <div class="card-desc">逐条拆解JD要求，你的优势盘点，3个月学习路线图，每日时间规划方案</div>
+    <div class="card-tags">
+      <span class="card-tag">JD拆解</span>
+      <span class="card-tag">学习路线</span>
+      <span class="card-tag">优势分析</span>
+    </div>
+  </a>
+
+  <a href="ch1-python.html" class="chapter-card" style="--color:#f59e0b">
+    <div class="card-time">第1-2周</div>
+    <div class="card-num">第 1 章</div>
+    <div class="card-icon">🐍</div>
+    <div class="card-title">Python 编程基础</div>
+    <div class="card-desc">变量类型、条件循环、函数定义、文件操作、异常处理、面向对象——从0到能写脚本</div>
+    <div class="card-tags">
+      <span class="card-tag">变量与类型</span>
+      <span class="card-tag">流程控制</span>
+      <span class="card-tag">函数</span>
+      <span class="card-tag">文件IO</span>
+      <span class="card-tag">异常处理</span>
+    </div>
+  </a>
+
+  <a href="ch2-rpa.html" class="chapter-card" style="--color:#10b981">
+    <div class="card-time">第3-4周</div>
+    <div class="card-num">第 2 章</div>
+    <div class="card-icon">🤖</div>
+    <div class="card-title">RPA 自动化开发</div>
+    <div class="card-desc">影刀RPA完整教程、Selenium网页自动化、Playwright、API自动化、流程设计规范</div>
+    <div class="card-tags">
+      <span class="card-tag">影刀RPA</span>
+      <span class="card-tag">Selenium</span>
+      <span class="card-tag">API自动化</span>
+      <span class="card-tag">流程设计</span>
+    </div>
+  </a>
+
+  <a href="ch3-agent.html" class="chapter-card" style="--color:#8b5cf6">
+    <div class="card-time">第5-6周</div>
+    <div class="card-num">第 3 章</div>
+    <div class="card-icon">🧠</div>
+    <div class="card-title">AI Agent 原理与实战</div>
+    <div class="card-desc">大模型基础、Prompt工程、LangChain框架、Dify/Coze平台、RAG知识库、Agent工作流</div>
+    <div class="card-tags">
+      <span class="card-tag">LLM基础</span>
+      <span class="card-tag">Prompt</span>
+      <span class="card-tag">LangChain</span>
+      <span class="card-tag">Dify</span>
+      <span class="card-tag">RAG</span>
+    </div>
+  </a>
+
+  <a href="ch4-etl.html" class="chapter-card" style="--color:#f97316">
+    <div class="card-time">第7-8周</div>
+    <div class="card-num">第 4 章</div>
+    <div class="card-icon">📊</div>
+    <div class="card-title">数据处理 ETL 实战</div>
+    <div class="card-desc">Pandas深度教程、Excel自动化、数据清洗100技巧、SQL进阶、数据采集爬虫入门</div>
+    <div class="card-tags">
+      <span class="card-tag">Pandas</span>
+      <span class="card-tag">Excel自动化</span>
+      <span class="card-tag">数据清洗</span>
+      <span class="card-tag">SQL</span>
+      <span class="card-tag">爬虫</span>
+    </div>
+  </a>
+
+  <a href="ch5-engineering.html" class="chapter-card" style="--color:#06b6d4">
+    <div class="card-time">第9-10周</div>
+    <div class="card-num">第 5 章</div>
+    <div class="card-icon">⚙️</div>
+    <div class="card-title">工程化开发规范</div>
+    <div class="card-desc">Git完整教程、日志系统设计、消息队列原理、定时任务、异常监控告警、代码规范</div>
+    <div class="card-tags">
+      <span class="card-tag">Git</span>
+      <span class="card-tag">Logging</span>
+      <span class="card-tag">消息队列</span>
+      <span class="card-tag">定时任务</span>
+      <span class="card-tag">监控告警</span>
+    </div>
+  </a>
+
+  <a href="ch6-projects.html" class="chapter-card" style="--color:#ec4899">
+    <div class="card-time">第11-12周</div>
+    <div class="card-num">第 6 章</div>
+    <div class="card-icon">🚀</div>
+    <div class="card-title">完整项目实战</div>
+    <div class="card-desc">5个完整实战项目：订单自动化、数据采集机器人、AI工单助手、报表自动生成、数据监控系统</div>
+    <div class="card-tags">
+      <span class="card-tag">完整项目</span>
+      <span class="card-tag">代码全集</span>
+      <span class="card-tag">架构设计</span>
+    </div>
+  </a>
+
+  <a href="ch7-interview.html" class="chapter-card" style="--color:#ef4444">
+    <div class="card-time">面试前</div>
+    <div class="card-num">第 7 章</div>
+    <div class="card-icon">🎤</div>
+    <div class="card-title">面试全攻略</div>
+    <div class="card-desc">50道高频面试题详解、自我介绍模板、简历优化建议、技术考核应对、薪资谈判技巧</div>
+    <div class="card-tags">
+      <span class="card-tag">面试题库</span>
+      <span class="card-tag">自我介绍</span>
+      <span class="card-tag">简历优化</span>
+      <span class="card-tag">薪资谈判</span>
+    </div>
+  </a>
+
+</div>
+
+</body>
+</html>

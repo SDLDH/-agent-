@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>第7章 · 面试全攻略</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body>
+<div class="page-header ch7">
+  <a href="index.html" class="back-btn">← 返回目录</a>
+  <div class="ch-num">第 7 章</div>
+  <h1>面试全攻略</h1>
+  <p>高频面试题 · 标准答案 · 自我介绍 · 简历优化 · 薪资谈判</p>
+</div>
+<div class="content">
+
+<!-- ===== 自我介绍 ===== -->
+<div class="section">
+  <h2 class="sec-title">🎙️ 7.1 自我介绍模板（2-3分钟版）</h2>
+
+  <div class="tip-card green">
+    <h4>自我介绍的黄金结构：背景 → 经历亮点 → 技能匹配 → 转型动机 → 期望</h4>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">✏️</div><h4>参考模板（根据你的情况修改！）</h4></div>
+    <div class="kp-body">
+      <div class="highlight-box blue">
+        <p>
+        "您好！我叫党光会，来自济南，有X年的IT相关工作经验。<br><br>
+
+        我的背景比较综合：做过硬件运维、ERP系统实施（用友/浪潮），也做过软件运维，先后在浪潮软件、中兴力维等公司工作过。我有比较扎实的数据库基础，Oracle和MySQL都有实际操作经验，做ERP的时候也积累了大量的业务流程理解。<br><br>
+
+        近半年来，我感受到AI自动化这个方向发展非常迅速，而且和我的ERP、数据库经验非常契合——把原来手工操作的业务流程自动化，正好是我能发挥优势的地方。所以我系统学习了Python基础、Selenium网页自动化、Dify/Coze等Agent平台，以及Pandas数据处理，做了几个小项目来练手。<br><br>
+
+        我觉得贵公司这个Agent开发岗位非常适合我，一方面我有数据库和业务流程的基础，能快速理解和落地自动化需求；另一方面我有很强的学习能力，接触新工具很快。期待有机会加入团队，把自动化技术和我的运维经验结合，为公司创造实际价值。"
+        </p>
+      </div>
+      <div class="tip-card orange">
+        <h4>注意事项</h4>
+        <ul>
+          <li>控制在2-3分钟内，不要超过3分钟</li>
+          <li>用具体数字说话：不要说"有经验"，要说"维护了X台服务器"、"实施了X套ERP"</li>
+          <li>提前背熟，面试前对着镜子练习至少3遍</li>
+          <li>语速适中，遇到专业词汇稍微放慢</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 面试题 ===== -->
+<div class="section">
+  <h2 class="sec-title">❓ 7.2 高频面试题详解（按模块分类）</h2>
+
+  <h3>🤖 RPA相关题目</h3>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">Q1</div><h4>什么是RPA？它和传统自动化脚本有什么区别？</h4></div>
+    <div class="kp-body">
+      <div class="highlight-box green">
+        <p><strong>参考答案：</strong><br>
+        RPA（机器人流程自动化）是通过模拟人类在界面上的操作来自动化重复性业务流程的技术。它的核心优势是<strong>无需修改现有系统</strong>，直接在UI层面操作，就像一个虚拟员工。<br><br>
+        与传统自动化脚本的区别：<br>
+        ① <strong>部署成本</strong>：传统脚本需要对接系统API，RPA不需要，直接操作界面<br>
+        ② <strong>适用场景</strong>：传统脚本适合技术友好的系统，RPA适合任何有界面的系统，甚至老系统<br>
+        ③ <strong>维护成本</strong>：界面变化时RPA需要调整，传统脚本更稳定<br>
+        ④ <strong>开发速度</strong>：RPA低代码，开发更快；传统脚本更灵活但开发周期长</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">Q2</div><h4>你用过哪些RPA工具？它们各有什么特点？</h4></div>
+    <div class="kp-body">
+      <div class="highlight-box blue">
+        <p><strong>参考答案：</strong><br>
+        我主要了解和学习过以下工具：<br>
+        ① <strong>影刀RPA</strong>：国产，中文界面，入门友好，内置AI能力，适合快速搭建流程<br>
+        ② <strong>来也RPA（UiBot）</strong>：国内企业级应用广泛，功能完善，有流程商店<br>
+        ③ <strong>Python+Selenium</strong>：代码灵活，可控性强，适合需要复杂逻辑的网页自动化<br>
+        ④ <strong>UiPath</strong>：国际主流，功能最全，学习曲线较陡<br><br>
+        选择依据：如果快速交付优先，用低代码RPA平台；如果需要深度定制或集成复杂系统，用Python代码方式。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">Q3</div><h4>RPA流程上线后，如何保证稳定运行？</h4></div>
+    <div class="kp-body">
+      <div class="highlight-box green">
+        <p><strong>参考答案（这题很重要！体现工程思维）：</strong><br>
+        ① <strong>完善的异常处理</strong>：try/except捕获各类异常，出错时不崩溃，记录日志后继续<br>
+        ② <strong>重试机制</strong>：网络波动、页面加载慢等临时问题，自动重试3次<br>
+        ③ <strong>日志记录</strong>：每个关键步骤都有日志，出问题能快速定位<br>
+        ④ <strong>监控告警</strong>：流程失败时自动发钉钉/企微通知，5分钟内收到告警<br>
+        ⑤ <strong>数据校验</strong>：处理完后核对数量，确保没有数据丢失<br>
+        ⑥ <strong>截图存档</strong>：出错时自动截图，便于排查问题<br>
+        ⑦ <strong>定期维护</strong>：界面变化时及时更新元素定位，防止流程失效</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>🧠 AI Agent相关题目</h3>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">Q4</div><h4>AI Agent和传统RPA有什么本质区别？</h4></div>
+    <div class="kp-body">
+      <div class="highlight-box blue">
+        <p><strong>参考答案：</strong><br>
+        核心区别在于<strong>决策方式</strong>：<br><br>
+        传统RPA：规则驱动，逻辑必须预先定义好，遇到预期之外的情况就会失败<br>
+        AI Agent：目标驱动，有大模型作为"大脑"，能理解非结构化输入，自主规划步骤，处理意外情况<br><br>
+        举例：处理报销审批邮件<br>
+        - RPA方式：必须预定义邮件格式，格式变了就识别不了<br>
+        - Agent方式：AI理解邮件内容，无论格式如何变化，都能提取关键信息<br><br>
+        两者结合才是最佳方案：用Agent理解需求和规划步骤，用RPA执行具体操作。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">Q5</div><h4>什么是RAG？在Agent中有什么作用？</h4></div>
+    <div class="kp-body">
+      <div class="highlight-box green">
+        <p><strong>参考答案：</strong><br>
+        RAG（检索增强生成）解决了大模型"不知道私有知识"的问题。<br><br>
+        工作原理：① 将企业内部文档（规章制度、产品手册、FAQ等）切片并向量化存储 → ② 用户提问时先在文档库中检索相关内容 → ③ 将检索到的内容和用户问题一起发给大模型 → ④ 大模型基于提供的文档内容生成回答<br><br>
+        在Agent中的价值：<br>
+        - 让AI能回答"公司请假规定是什么"、"这个产品的API文档怎么用"等问题<br>
+        - 避免大模型"胡编乱造"，回答有据可查<br>
+        - 知识更新只需更新文档，不需要重新训练模型</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>📊 数据处理相关题目</h3>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">Q6</div><h4>ETL流程中，你如何保证数据质量？</h4></div>
+    <div class="kp-body">
+      <div class="highlight-box blue">
+        <p><strong>参考答案（结合你的数据库经验！）：</strong><br>
+        我的数据质量保证体系分四个环节：<br><br>
+        ① <strong>源头校验（Extract阶段）</strong>：检查必填字段不为空、数字字段范围合理、日期格式正确、主键唯一<br><br>
+        ② <strong>处理中校验（Transform阶段）</strong>：去重处理，异常值识别（超出3倍标准差），类型转换失败记录<br><br>
+        ③ <strong>加载后校验（Load阶段）</strong>：对比源数据和目标数据的行数，抽样验证关键字段值是否一致<br><br>
+        ④ <strong>持续监控</strong>：设置数据质量监控任务，每天生成数据质量报告，发现问题及时告警<br><br>
+        工具上我会结合Pandas的数据校验和SQL的数据核对。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">Q7</div><h4>处理大量Excel文件时，你有什么优化思路？</h4></div>
+    <div class="kp-body">
+      <div class="highlight-box green">
+        <p><strong>参考答案：</strong><br>
+        ① <strong>读取优化</strong>：只读取需要的列（usecols参数），不加载全部数据；使用chunksize分块读取大文件<br><br>
+        ② <strong>处理优化</strong>：用Pandas向量化操作代替Python循环（速度差10-100倍）；避免在循环里做DataFrame操作，改用apply或groupby<br><br>
+        ③ <strong>并行处理</strong>：多个文件时用multiprocessing并行读取处理，充分利用多核<br><br>
+        ④ <strong>数据类型优化</strong>：将大文本列转为category类型，将64位整数降为32位，内存使用减少50%以上<br><br>
+        ⑤ <strong>中间缓存</strong>：清洗后的数据保存为Parquet格式，比CSV快10倍，支持列式读取</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>⚙️ 工程化相关题目</h3>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">Q8</div><h4>自动化流程出现异常，你的排查思路是什么？</h4></div>
+    <div class="kp-body">
+      <div class="highlight-box blue">
+        <p><strong>参考答案（结合你的运维经验！）：</strong><br>
+        这和我之前做运维的排查思路类似，分层定位：<br><br>
+        ① <strong>看告警内容</strong>：告警消息里有错误类型和关键字段，先判断是偶发还是持续<br><br>
+        ② <strong>看日志</strong>：找到出错时间点的日志，看错误堆栈（traceback），定位是代码问题还是环境问题<br><br>
+        ③ <strong>分析错误类型</strong>：<br>
+           - ConnectionError → 检查网络/API是否正常<br>
+           - KeyError/ValueError → 检查数据格式是否变化<br>
+           - TimeoutError → 检查目标系统响应速度<br><br>
+        ④ <strong>复现问题</strong>：用出错时的数据在测试环境复现，确认是数据问题还是代码逻辑问题<br><br>
+        ⑤ <strong>修复并防范</strong>：修复后加更多的防护措施，避免同类问题再次出现</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">Q9</div><h4>你如何将业务需求转化为自动化方案？</h4></div>
+    <div class="kp-body">
+      <div class="highlight-box green">
+        <p><strong>参考答案（结合ERP经验！）：</strong><br>
+        在ERP实施中我做过很多需求分析，思路相通：<br><br>
+        ① <strong>需求调研</strong>：和业务方（财务/运营等）充分沟通，了解当前的手工流程，用流程图记录每个步骤<br><br>
+        ② <strong>识别自动化机会</strong>：找出重复性高、规则固定、数据量大的环节，评估自动化价值（节省多少时间）<br><br>
+        ③ <strong>设计方案</strong>：确定数据来源、处理逻辑、输出目标；选择合适工具（低代码RPA还是Python代码）<br><br>
+        ④ <strong>与业务方确认</strong>：展示方案原型，确认业务逻辑理解正确，特别是边界条件和异常场景<br><br>
+        ⑤ <strong>开发测试</strong>：小批量测试验证，对比手工结果，确认准确性达到要求再全量上线<br><br>
+        ⑥ <strong>上线维护</strong>：培训业务人员如何查看执行状态，建立反馈机制</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>💬 综合能力题目</h3>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">Q10</div><h4>说一个你做过的比较有挑战性的项目</h4></div>
+    <div class="kp-body">
+      <div class="tip-card orange">
+        <h4>STAR方法：情境-任务-行动-结果</h4>
+        <p>即使是学习中做的小项目也可以说，关键是说清楚你解决了什么问题、遇到什么困难、怎么克服的。</p>
+      </div>
+      <div class="highlight-box blue">
+        <p><strong>参考思路（套用你自己的经历）：</strong><br>
+        S（情境）：在XX公司，财务每月需要从三个系统手动汇总数据，耗时3天...<br>
+        T（任务）：我负责设计一套自动化方案，把时间压缩到1小时以内...<br>
+        A（行动）：我用Python+Pandas做了一个数据汇总脚本，中间遇到了XX问题（数据格式不统一/某系统无API），我的解决办法是...<br>
+        R（结果）：最终从3天缩短到2小时，准确率接近100%，每月节省了约XX小时的人力...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 简历优化 ===== -->
+<div class="section">
+  <h2 class="sec-title">📄 7.3 简历优化建议</h2>
+
+  <div class="card-grid">
+    <div class="mini-card">
+      <h4>✅ 技能栏怎么写</h4>
+      <ul>
+        <li>Python（数据处理/API调用）</li>
+        <li>RPA工具：影刀RPA / Selenium</li>
+        <li>AI工具：Dify / Coze / LangChain</li>
+        <li>数据处理：Pandas / Excel</li>
+        <li>数据库：Oracle / MySQL / SQL</li>
+        <li>工程化：Git / 日志 / 定时任务</li>
+      </ul>
+    </div>
+    <div class="mini-card">
+      <h4>✅ 工作经历怎么写</h4>
+      <ul>
+        <li>用"自动化"角度重新包装经历</li>
+        <li>ERP实施 → 业务流程分析和优化</li>
+        <li>数据库运维 → 数据质量保障经验</li>
+        <li>系统运维 → 监控告警和问题排查</li>
+        <li>加入具体数字（几个系统/多少条数据）</li>
+      </ul>
+    </div>
+    <div class="mini-card">
+      <h4>✅ 项目经历（必须有！）</h4>
+      <ul>
+        <li>做一个能演示的项目（哪怕是练手的）</li>
+        <li>推荐：数据自动采集处理报表项目</li>
+        <li>说明：技术栈+解决了什么问题+效果</li>
+        <li>有GitHub链接加分很多</li>
+      </ul>
+    </div>
+    <div class="mini-card">
+      <h4>❌ 常见简历问题</h4>
+      <ul>
+        <li>技能堆砌，没有程度说明</li>
+        <li>工作经历只描述职责，没有成果</li>
+        <li>没有项目经历（最致命）</li>
+        <li>与岗位无关的内容太多</li>
+        <li>排版混乱，重点不突出</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 薪资谈判 ===== -->
+<div class="section">
+  <h2 class="sec-title">💰 7.4 薪资谈判技巧</h2>
+
+  <div class="tip-card blue">
+    <h4>这个岗位JD写的是1.5-2.5万·14薪，年薪范围21万-35万</h4>
+    <p>作为转岗者，初期可以接受中等偏下，但要争取有明确的晋升通道和技术成长机会。</p>
+  </div>
+
+  <div class="knowledge-point">
+    <div class="kp-header"><div class="kp-num">💡</div><h4>薪资谈判话术参考</h4></div>
+    <div class="kp-body">
+      <div class="highlight-box green">
+        <p><strong>当HR问"你期望薪资是多少"：</strong><br>
+        "我了解到贵公司这个岗位的薪资范围是1.5-2.5万，考虑到我有X年的IT运维和ERP实施经验，数据库基础比较扎实，在Python和RPA方面也做了充分的学习准备，我期望能在2万到2.3万这个区间，您看可以吗？"<br><br>
+
+        <strong>如果对方给的低于期望：</strong><br>
+        "我理解公司的考虑，因为我是转岗过来，确实需要一段时间适应。不过我的IT运维和数据库经验可以直接复用，能快速上手。我们能不能约定3-6个月的试用期结束后，根据表现做一次薪资调整？"<br><br>
+
+        <strong>关注点不仅是工资：</strong><br>
+        技术成长空间、是否能接触新技术、团队氛围、是否有学习资源支持——这些对转岗者长远发展很重要。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 提升竞争力 ===== -->
+<div class="section">
+  <h2 class="sec-title">🚀 7.5 提升竞争力的核心建议</h2>
+
+  <div class="step-list">
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>做一个可以演示的项目（最重要！）</h4>
+        <p>哪怕就是"从网页抓数据 → 清洗 → 存数据库 → 生成Excel报表"这种简单项目，能现场演示，比说10个概念都有说服力。</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>注册并熟悉Dify或Coze</h4>
+        <p>能说出"我用Dify搭建了一个知识库问答机器人"，立刻让面试官眼前一亮。这两个工具入门很快，周末2小时就能上手。</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>把你的优势说透</h4>
+        <p>ERP实施经验 = 懂业务流程，这是很多纯技术开发者没有的。数据库经验 = 能处理数据问题。面试时主动提，而不是等面试官问。</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h4>展示学习能力</h4>
+        <p>面试时可以说"我这X个月学了XXX，做了XXX项目"——把学习过程说出来，证明你是快速学习者，而不仅仅是已掌握的技能。</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h4>多投递，广撒网</h4>
+        <p>除了这家，还可以搜索：AI开发工程师、自动化运营工程师、数据工程师、运维开发（DevOps）等相关岗位，你的经验都有匹配度。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-card green">
+    <h4>🎯 祝你面试成功！</h4>
+    <p>转岗需要勇气，但你有比很多竞争者更扎实的基础（数据库、业务流程、运维经验）。<br>
+    只要把技术短板补上，把优势表达清楚，拿到这个offer完全可以期待！<br><br>
+    加油！💪</p>
+  </div>
+</div>
+
+</div>
+<div class="nav-footer">
+  <a href="ch6-projects.html" class="nav-btn">← 上一章：实战项目</a>
+  <a href="index.html" class="nav-btn primary">🏠 返回目录</a>
+</div>
+</body>
+</html>

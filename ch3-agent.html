@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>第3章 · AI Agent原理与实战</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body>
+<div class="page-header ch3">
+  <a href="index.html" class="back-btn">← 返回目录</a>
+  <div class="ch-num">第 3 章</div>
+  <h1>AI Agent 原理与实战</h1>
+  <p>大模型基础 · Prompt工程 · LangChain · Dify/Coze平台 · RAG知识库</p>
+</div>
+<div class="content">
+
+<div class="section">
+  <h2 class="sec-title">🧠 3.0 理解AI Agent的本质</h2>
+
+  <div class="concept-box">
+    <div class="concept-icon">🤔</div>
+    <div class="concept-body">
+      <h4>传统程序 vs AI Agent 的本质区别</h4>
+      <p><strong>传统程序</strong>：你告诉它"如果A就做B，如果C就做D"，它严格按照规则走，规则没覆盖的情况就出错。<br>
+      <strong>AI Agent</strong>：你告诉它"帮我完成这个目标"，它自己思考步骤、选择工具、处理异常，就像一个有判断力的员工。</p>
+    </div>
+  </div>
+
+  <h3>🔍 大模型（LLM）是AI Agent的"大脑"</h3>
+  <table class="simple-table">
+    <tr><th>大模型</th><th>厂商</th><th>特点</th><th>如何调用</th></tr>
+    <tr><td>GPT-4o</td><td>OpenAI</td><td>综合能力最强，英文尤佳</td><td>openai.com API</td></tr>
+    <tr><td>文心一言（ERNIE）</td><td>百度</td><td>中文理解好，国内合规</td><td>qianfan.baidu.com</td></tr>
+    <tr><td>通义千问（Qwen）</td><td>阿里</td><td>代码能力强，免费额度多</td><td>dashscope.aliyuncs.com</td></tr>
+    <tr><td>DeepSeek</td><td>深度求索</td><td>价格极低，推理能力强</td><td>api.deepseek.com</td></tr>
+    <tr><td>智谱AI（ChatGLM）</td><td>智谱</td><td>国内，有免费额度</td><td>open.bigmodel.cn</td></tr>
+  </table>
+
+  <div class="tip-card blue">
+    <h4>💡 学习建议：用国产模型练手</h4>
+    <p>DeepSeek 和 通义千问 都有大量免费额度，API接口和OpenAI兼容，学习成本接近零。<br>
+    注册方式：手机号注册，几分钟拿到API Key，立即可用。</p>
+  </div>
+</div>
+
+<!-- ===== 3.1 Prompt工程 ===== -->
+<div class="section">
+  <h2 class="sec-title">✍️ 3.1 Prompt 工程（提示词设计）</h2>
+
+  <div class="concept-box">
+    <div class="concept-icon">💬</div>
+    <div class="concept-body">
+      <h4>什么是Prompt？为什么重要？</h4>
+      <p>Prompt就是你给大模型的"指令"。同样的模型，写得好的Prompt和写得烂的Prompt，效果天壤之别。<br>
+      做Agent开发，<strong>70%的工作是写好Prompt</strong>。</p>
+    </div>
+  </div>
+
+  <h3>📋 Prompt的三种角色</h3>
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+    <div class="code-body"><span class="k">from</span> openai <span class="k">import</span> OpenAI
+
+<span class="v">client</span> = <span class="f">OpenAI</span>(
+    api_key=<span class="s">"your-api-key"</span>,
+    base_url=<span class="s">"https://api.deepseek.com"</span>   <span class="c"># 用DeepSeek，便宜</span>
+)
+
+<span class="v">response</span> = <span class="v">client</span>.chat.completions.<span class="f">create</span>(
+    model=<span class="s">"deepseek-chat"</span>,
+    messages=[
+        <span class="c"># system：设定AI的角色和行为规范（整个对话都有效）</span>
+        {
+            <span class="s">"role"</span>: <span class="s">"system"</span>,
+            <span class="s">"content"</span>: <span class="s">"""你是一个专业的数据分析助手，擅长分析业务数据。
+你的工作原则：
+1. 回答要简洁、准确
+2. 如果数据不足，明确说明需要什么信息
+3. 给出具体的数字和比例
+4. 使用中文回答"""</span>
+        },
+        <span class="c"># user：用户的问题</span>
+        {
+            <span class="s">"role"</span>: <span class="s">"user"</span>,
+            <span class="s">"content"</span>: <span class="s">"这个月销售额120万，上个月100万，请分析"</span>
+        },
+        <span class="c"># assistant：AI的回答（用于多轮对话，把历史回答也带上）</span>
+        {
+            <span class="s">"role"</span>: <span class="s">"assistant"</span>,
+            <span class="s">"content"</span>: <span class="s">"本月销售额较上月增长20%（20万元），增速良好..."</span>
+        },
+        <span class="c"># 用户继续追问</span>
+        {
+            <span class="s">"role"</span>: <span class="s">"user"</span>,
+            <span class="s">"content"</span>: <span class="s">"如果保持这个增速，3个月后能达到多少？"</span>
+        }
+    ]
+)
+
+<span class="f">print</span>(<span class="v">response</span>.choices[<span class="n">0</span>].message.content)</div>
+  </div>
+
+  <h3>🎯 高质量Prompt写法技巧</h3>
+  <div class="card-grid">
+    <div class="mini-card">
+      <h4>① 明确角色</h4>
+      <p>不好：「帮我写邮件」<br>好：「你是一个商务邮件专家，帮我写一封…」</p>
+    </div>
+    <div class="mini-card">
+      <h4>② 给具体背景</h4>
+      <p>不好：「分析这份数据」<br>好：「这是财务部2024年Q1的报销数据，包含字段…，请分析异常项」</p>
+    </div>
+    <div class="mini-card">
+      <h4>③ 指定输出格式</h4>
+      <p>不好：「提取信息」<br>好：「请以JSON格式输出，包含字段：name, date, amount」</p>
+    </div>
+    <div class="mini-card">
+      <h4>④ 给出示例</h4>
+      <p>提供一两个input→output例子，AI会更精准地理解你想要什么</p>
+    </div>
+  </div>
+
+  <h3>💡 实战Prompt案例：数据提取</h3>
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+    <div class="code-body"><span class="k">def</span> <span class="f">extract_invoice_info</span>(<span class="v">invoice_text</span>):
+    <span class="s">"""用AI从发票文字中提取结构化信息"""</span>
+    
+    <span class="v">prompt</span> = <span class="s">f"""
+你是一个发票信息提取专家。请从以下发票文字中提取关键信息。
+
+## 输出要求
+严格按照JSON格式输出，不要有多余文字。
+
+## 输出格式
+{{
+    "invoice_number": "发票号码",
+    "date": "开票日期（格式YYYY-MM-DD）",
+    "seller": "销售方名称",
+    "buyer": "购买方名称",
+    "amount": 金额数字（不含税，数字类型）,
+    "tax": 税额数字（数字类型）,
+    "total": 价税合计（数字类型）,
+    "items": ["货物或服务名称列表"]
+}}
+
+## 发票内容
+{invoice_text}
+"""</span>
+    
+    <span class="v">response</span> = <span class="v">client</span>.chat.completions.<span class="f">create</span>(
+        model=<span class="s">"deepseek-chat"</span>,
+        messages=[{<span class="s">"role"</span>: <span class="s">"user"</span>, <span class="s">"content"</span>: <span class="v">prompt</span>}],
+        temperature=<span class="n">0</span>   <span class="c"># temperature=0 输出更稳定，适合结构化提取</span>
+    )
+    
+    <span class="k">import</span> json
+    <span class="v">result_text</span> = <span class="v">response</span>.choices[<span class="n">0</span>].message.content
+    <span class="k">return</span> json.<span class="f">loads</span>(<span class="v">result_text</span>)
+
+<span class="c"># 使用示例</span>
+<span class="v">invoice_text</span> = <span class="s">"""
+增值税专用发票
+发票号码：12345678
+开票日期：2024年01月15日
+销售方：北京某某科技有限公司
+购买方：济南半亩花田有限公司
+货物：软件服务费
+不含税金额：86206.90元
+税额（13%）：11206.90元
+价税合计：100000.00元
+"""</span>
+
+<span class="v">info</span> = <span class="f">extract_invoice_info</span>(<span class="v">invoice_text</span>)
+<span class="f">print</span>(json.<span class="f">dumps</span>(<span class="v">info</span>, ensure_ascii=<span class="k">False</span>, indent=<span class="n">2</span>))</div>
+  </div>
+</div>
+
+<!-- ===== 3.2 Dify平台 ===== -->
+<div class="section">
+  <h2 class="sec-title">🏗️ 3.2 Dify 平台完整教程</h2>
+
+  <div class="tip-card green">
+    <h4>为什么重点学Dify？</h4>
+    <p>Dify是国内最流行的开源AI应用构建平台，可视化构建工作流，不需要太多代码。面试官最喜欢听"我用Dify搭了一个XXX的Agent"。</p>
+  </div>
+
+  <h3>📍 注册与开始</h3>
+  <div class="step-list">
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>访问 cloud.dify.ai</h4>
+        <p>点击"免费开始"，用邮箱注册（推荐）或GitHub登录</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>配置模型（重要！）</h4>
+        <p>左上角头像 → 设置 → 模型供应商 → 添加你的API Key（DeepSeek/文心/通义任选一个）</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>创建第一个应用</h4>
+        <p>首页 → 创建空白应用 → 选择"工作流"类型</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>🔧 Dify工作流核心节点</h3>
+  <table class="simple-table">
+    <tr><th>节点类型</th><th>作用</th><th>使用场景</th></tr>
+    <tr><td>开始节点</td><td>定义工作流的输入参数</td><td>接收用户传入的数据</td></tr>
+    <tr><td>LLM节点</td><td>调用大模型处理文本</td><td>AI分析、生成、提取</td></tr>
+    <tr><td>条件分支</td><td>根据条件走不同路径</td><td>分类处理不同情况</td></tr>
+    <tr><td>HTTP请求</td><td>调用外部API</td><td>查数据库、调用系统接口</td></tr>
+    <tr><td>代码执行</td><td>运行Python代码</td><td>数据处理、格式转换</td></tr>
+    <tr><td>知识库检索</td><td>在上传的文档中搜索</td><td>RAG问答</td></tr>
+    <tr><td>模板转换</td><td>格式化文本</td><td>拼接字符串、生成报告</td></tr>
+    <tr><td>结束节点</td><td>定义工作流的输出</td><td>返回最终结果</td></tr>
+  </table>
+
+  <h3>🏆 实战案例：搭建一个"智能工单处理"工作流</h3>
+  <div class="flow-row">
+    <div class="flow-node active">📧 接收工单<br><small>（开始节点）</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">🧠 AI分类<br><small>（LLM节点）</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">🔀 条件分支<br><small>（判断类型）</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">🔍 知识库查询<br><small>（检索答案）</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node active">📤 生成回复<br><small>（结束节点）</small></div>
+  </div>
+
+  <div class="step-list">
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>开始节点：定义输入</h4>
+        <p>添加变量：<code>ticket_content</code>（文本类型）—— 这是接收到的工单内容</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>LLM节点：工单分类</h4>
+        <p>Prompt：「请分析以下工单内容，返回JSON格式：{"category": "类别", "priority": "优先级", "summary": "摘要"}」</p>
+        <p>把 <code>ticket_content</code> 变量嵌入Prompt</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h4>条件分支：按类别处理</h4>
+        <p>category == "技术问题" → 走技术支持流程<br>
+        category == "账号问题" → 走账号处理流程<br>
+        其他 → 走人工处理流程</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h4>知识库节点：查找解决方案</h4>
+        <p>上传公司FAQ文档 → 根据工单摘要检索相关答案</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h4>LLM节点：生成回复</h4>
+        <p>把工单内容+知识库答案组合，让AI生成礼貌的回复邮件</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 3.3 RAG知识库 ===== -->
+<div class="section">
+  <h2 class="sec-title">📚 3.3 RAG 知识库（让AI读懂你的文档）</h2>
+
+  <div class="concept-box">
+    <div class="concept-icon">🗄️</div>
+    <div class="concept-body">
+      <h4>RAG = Retrieval-Augmented Generation（检索增强生成）</h4>
+      <p>大模型只知道训练数据里的知识。你公司的内部规定、产品手册、历史数据，AI不知道。<br>
+      RAG的原理：先把你的文档分片存入向量数据库 → 用户提问时先在文档里搜索相关内容 → 把搜索结果和问题一起发给AI → AI基于你的文档回答。</p>
+    </div>
+  </div>
+
+  <div class="flow-row">
+    <div class="flow-node">📄 上传文档<br><small>PDF/Word/Excel</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">✂️ 文档分片</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node active">🗄️ 向量化存储</div>
+    <div class="flow-arrow">↑↓</div>
+    <div class="flow-node">🔍 相似度检索</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">🤖 AI生成回答</div>
+  </div>
+
+  <div class="tip-card purple">
+    <h4>在Dify中如何使用RAG？</h4>
+    <ol>
+      <li>左侧导航 → 知识库 → 创建知识库</li>
+      <li>上传文档（支持PDF、Word、Excel、TXT等）</li>
+      <li>等待文档处理完成（自动切片和向量化）</li>
+      <li>在工作流中添加"知识库检索"节点，连接这个知识库</li>
+      <li>将检索结果传给LLM节点，让AI参考文档内容回答</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ===== 3.4 LangChain代码 ===== -->
+<div class="section">
+  <h2 class="sec-title">⚙️ 3.4 LangChain 代码级 Agent 开发</h2>
+
+  <div class="tip-card orange">
+    <h4>什么时候用LangChain代码，什么时候用Dify？</h4>
+    <p>Dify适合：标准工作流、不复杂的逻辑、快速上线<br>
+    LangChain代码适合：复杂逻辑、需要深度定制、集成复杂系统</p>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header"><div class="code-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><div class="code-lang">python</div></div>
+    <div class="code-body"><span class="c"># 安装：pip install langchain langchain-openai</span>
+<span class="k">from</span> langchain_openai <span class="k">import</span> ChatOpenAI
+<span class="k">from</span> langchain.agents <span class="k">import</span> AgentExecutor, create_tool_calling_agent
+<span class="k">from</span> langchain.tools <span class="k">import</span> tool
+<span class="k">from</span> langchain_core.prompts <span class="k">import</span> ChatPromptTemplate
+
+<span class="c"># ===== 1. 定义工具（Agent可以调用的函数）=====</span>
+
+@tool
+<span class="k">def</span> <span class="f">query_order_status</span>(<span class="v">order_id</span>: str) -> str:
+    <span class="s">"""查询订单的当前状态。
+    
+    Args:
+        order_id: 订单号，格式如 ORD-2024-001
+    """</span>
+    <span class="c"># 实际上这里会查数据库或调API</span>
+    <span class="c"># 这里用模拟数据</span>
+    <span class="v">mock_data</span> = {
+        <span class="s">"ORD-001"</span>: <span class="s">"已发货，预计明天到达"</span>,
+        <span class="s">"ORD-002"</span>: <span class="s">"待审批"</span>,
+        <span class="s">"ORD-003"</span>: <span class="s">"已完成"</span>
+    }
+    <span class="k">return</span> <span class="v">mock_data</span>.<span class="f">get</span>(<span class="v">order_id</span>, <span class="s">f"未找到订单 {order_id}"</span>)
+
+@tool
+<span class="k">def</span> <span class="f">get_employee_info</span>(<span class="v">name</span>: str) -> str:
+    <span class="s">"""获取员工信息。
+    
+    Args:
+        name: 员工姓名
+    """</span>
+    <span class="v">employees</span> = {
+        <span class="s">"张三"</span>: <span class="s">"财务部，职位：会计，工号：FIN001"</span>,
+        <span class="s">"李四"</span>: <span class="s">"运营部，职位：运营专员，工号：OPS002"</span>
+    }
+    <span class="k">return</span> <span class="v">employees</span>.<span class="f">get</span>(<span class="v">name</span>, <span class="s">f"未找到员工 {name}"</span>)
+
+<span class="c"># ===== 2. 创建大模型 =====</span>
+<span class="v">llm</span> = <span class="f">ChatOpenAI</span>(
+    model=<span class="s">"deepseek-chat"</span>,
+    base_url=<span class="s">"https://api.deepseek.com/v1"</span>,
+    api_key=<span class="s">"your-deepseek-key"</span>,
+    temperature=<span class="n">0</span>
+)
+
+<span class="c"># ===== 3. 定义Agent的Prompt =====</span>
+<span class="v">prompt</span> = <span class="f">ChatPromptTemplate</span>.<span class="f">from_messages</span>([
+    (<span class="s">"system"</span>, <span class="s">"你是一个智能助手，可以查询订单和员工信息。请用中文回答。"</span>),
+    (<span class="s">"human"</span>, <span class="s">"{input}"</span>),
+    (<span class="s">"placeholder"</span>, <span class="s">"{agent_scratchpad}"</span>)   <span class="c"># Agent思考过程的占位符</span>
+])
+
+<span class="c"># ===== 4. 创建并运行Agent =====</span>
+<span class="v">tools</span> = [<span class="v">query_order_status</span>, <span class="v">get_employee_info</span>]
+<span class="v">agent</span> = <span class="f">create_tool_calling_agent</span>(<span class="v">llm</span>, <span class="v">tools</span>, <span class="v">prompt</span>)
+<span class="v">executor</span> = <span class="f">AgentExecutor</span>(<span class="v">agent</span>=<span class="v">agent</span>, <span class="v">tools</span>=<span class="v">tools</span>, verbose=<span class="k">True</span>)
+
+<span class="c"># 提问！Agent会自动决定调用哪些工具</span>
+<span class="v">result</span> = <span class="v">executor</span>.<span class="f">invoke</span>({<span class="s">"input"</span>: <span class="s">"ORD-001的状态是什么？张三在哪个部门？"</span>})
+<span class="f">print</span>(<span class="v">result</span>[<span class="s">"output"</span>])
+
+<span class="c"># 输出示例（verbose=True可以看到Agent的思考过程）：
+# 思考：需要查询订单ORD-001的状态，调用query_order_status("ORD-001")
+# 观察：已发货，预计明天到达
+# 思考：需要查询张三的信息，调用get_employee_info("张三")
+# 观察：财务部，职位：会计，工号：FIN001
+# 最终回答：ORD-001已发货，预计明天到达。张三在财务部，担任会计职位。</span></div>
+  </div>
+
+  <div class="exercise">
+    <h4>🏋️ 章节练习</h4>
+    <ol>
+      <li>注册Dify账号，配置DeepSeek API Key，搭建一个对话机器人，给它设定一个角色</li>
+      <li>在Dify中创建一个工作流：输入一段文字 → AI提取关键信息 → 以JSON格式输出</li>
+      <li>上传一份公司规章制度文档到知识库，搭建一个可以回答"请假流程是什么"的问答机器人</li>
+      <li>用Python requests调用Dify发布的API，实现程序化调用</li>
+    </ol>
+  </div>
+</div>
+
+</div>
+<div class="nav-footer">
+  <a href="ch2-rpa.html" class="nav-btn">← 上一章：RPA自动化</a>
+  <a href="index.html" class="nav-btn">🏠 目录</a>
+  <a href="ch4-etl.html" class="nav-btn primary">下一章：数据ETL →</a>
+</div>
+</body>
+</html>
